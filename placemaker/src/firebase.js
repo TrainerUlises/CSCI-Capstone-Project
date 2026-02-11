@@ -17,6 +17,7 @@ const firebaseConfig =
 
 // initializing firebase application, connects to the project
 const app = initializeApp(firebaseConfig);
+/*console.log("Firebase app initialized:", app); // test*/
 
 //Firestore = our database
 export const db = getFirestore(app);
