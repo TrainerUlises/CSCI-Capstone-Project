@@ -5,7 +5,6 @@ import {getAuth} from "firebase/auth";
 
 const firebaseConfig = 
 {
-
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
     projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
@@ -15,9 +14,14 @@ const firebaseConfig =
 
 };
 
+console.log("FIREBASE ENV CHECK", {
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  });
+  
 // initializing firebase application, connects to the project
 const app = initializeApp(firebaseConfig);
-/*console.log("Firebase app initialized:", app); // test*/
 
 //Firestore = our database
 export const db = getFirestore(app);
