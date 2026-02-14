@@ -8,13 +8,8 @@ import { Routes, Route } from 'react-router-dom'
 import Login from './routes/Login'
 import './App.css'
 
-// new imports needed for database
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "./firebase";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   //DUMMY CODE
   async function testFirestoreWrite() {
     try {
