@@ -1,0 +1,40 @@
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+  height: 72px;
+  background: #4b4b4b;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.navbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.navbar__logoBox {
+  width: 46px;
+  height: 46px;
+  background: #f1f1f1;
+  border: 1px solid #2c2c2c;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.navbar__logoBox svg {
+  width: 30px;
+  height: 30px;
+}
+
+.navbar__title {
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+  
