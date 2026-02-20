@@ -4,7 +4,7 @@ import "./Login.css"; // reusing styling
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { auth, db } from "../firebase";
+import { auth, db } from "../firebase.js";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 

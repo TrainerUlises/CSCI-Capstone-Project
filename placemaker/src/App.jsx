@@ -1,13 +1,12 @@
 // new imports needed for database
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebase";
-/*import { useEffect } from "react";*/
 
-import { useState } from 'react'
+import './App.css'
 import { Routes, Route } from 'react-router-dom'
 import Login from './routes/Login'
-import './App.css'
-import Signup from './routes/Signup'
+import Signup from './routes/SignUp'
+import Landing from './routes/Landing'
 
 
 
@@ -25,13 +24,15 @@ function App() {
       console.error("Error adding document:", error);
     }
   }
+
   return (
     <>
     <button onClick={testFirestoreWrite}>
         Test Firestore Write
       </button>
     <Routes>
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={<Landing />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
     </Routes>
     </>
