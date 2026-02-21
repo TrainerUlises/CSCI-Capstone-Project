@@ -5,6 +5,7 @@ import { db } from "./firebase";
 
 import { useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
+import Home from './routes/Home'
 import Login from './routes/Login'
 import './App.css'
 import Signup from './routes/Signup'
@@ -31,7 +32,8 @@ function App() {
         Test Firestore Write
       </button>
     <Routes>
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
     </Routes>
     </>
