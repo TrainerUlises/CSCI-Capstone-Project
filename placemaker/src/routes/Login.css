@@ -33,9 +33,10 @@
   
   .form__group label {
     display: block;
-    font-weight: 700;
-    font-size: 26px;
-    margin-bottom: 10px;
+    font-weight: 400;
+    font-size: 20px;
+    margin-bottom: 5px;
+    text-align: left;
   }
   
   .form__input {
@@ -49,8 +50,8 @@
   
   .form__row {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: space-evenly;
+    align-items: flex-end;
     margin-top: 6px;
   }
   
@@ -82,8 +83,26 @@
     font-size: 16px;
     cursor: pointer;
   }
+
+.form__button--small {
+    width: 180px;
+    height: 62px;
+    border: 1px solid #2c2c2c;
+    background: #efefef;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
   
   .form__button:hover {
     background: #e6e6e6;
   }
-  
+
+.form__dateInput {
+    width: 210px;
+    height: 56px;
+    border: 1px solid #2c2c2c;
+    border-radius: 4px;
+    padding: 0 16px;
+    font-size: 16px;
+}
