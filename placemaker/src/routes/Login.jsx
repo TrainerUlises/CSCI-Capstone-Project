@@ -57,15 +57,15 @@ export default function Login() {
         <div>
             <Navbar />
             <main className="login">
-                <div className="login__container">
-                    <h1 className="login__heading">Log In</h1>
+                <div className="login_container">
+                    <h1 className="login_heading">Log In</h1>
 
-                    <section className="login__card">
+                    <section className="login_card">
                         <form className="form" onSubmit={handleLogin}>
 
-                            <div className="form__group">
+                            <div className="form_group">
                                 <input 
-                                    className="form__input"
+                                    className="form_input"
                                     type="email"
                                     placeholder="Email"
                                     value={email}
@@ -74,9 +74,9 @@ export default function Login() {
                                 />
                             </div>
 
-                            <div className="form__group">
+                            <div className="form_group">
                                 <input 
-                                    className="form__input"
+                                    className="form_input"
                                     type="password"
                                     placeholder="Password"
                                     value={password}
@@ -91,10 +91,10 @@ export default function Login() {
                                 </p>
                             )}
 
-                            <div className="form__actions">
+                            <div className="form_actions">
                                 <button 
                                     type="submit"
-                                    className="form__button"
+                                    className="form_button"
                                 >
                                     Log In
                                 </button>
@@ -103,7 +103,7 @@ export default function Login() {
                             <div style={{ textAlign: "center", marginTop: "16px"}}>
                                 <span style={{ fontSize: "14px"}}>
                                     Don't have an account?{" "}
-                                    <Link to="/signup" className="form__link">
+                                    <Link to="/signup" className="form_link">
                                         Sign up here today!
                                     </Link>
                                 </span>

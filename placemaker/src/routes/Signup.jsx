@@ -56,15 +56,15 @@ export default function Signup() {
             <Navbar />
 
             <main className="login">
-                <div className="login__container">
-                    <h1 className="login__heading">Sign Up Here</h1>
+                <div className="login_container">
+                    <h1 className="login_heading">Sign Up Here</h1>
 
-                    <section className="login__card">
+                    <section className="login_card">
                         <form className="form" onSubmit={handleSignup}>
 
-                            <div className="form__group">
+                            <div className="form_group">
                                 <input 
-                                    className="form__input"
+                                    className="form_input"
                                     type="email"
                                     placeholder="Email"
                                     value={email}
@@ -73,9 +73,9 @@ export default function Signup() {
                                 />
                             </div>
 
-                            <div className="form__group">
+                            <div className="form_group">
                                 <input 
-                                    className="form__input"
+                                    className="form_input"
                                     type="password"
                                     placeholder="Password"
                                     value={password}
@@ -84,9 +84,9 @@ export default function Signup() {
                                 />
                             </div>
 
-                            <div className="form__group">
+                            <div className="form_group">
                                 <input 
-                                    className="form__input"
+                                    className="form_input"
                                     type="text"
                                     placeholder="ZIP Code"
                                     value={zipCode}
@@ -101,10 +101,10 @@ export default function Signup() {
                                 </p>
                             )}
 
-                            <div className="form__actions">
+                            <div className="form_actions">
                                 <button 
                                     type="submit" 
-                                    className="form__button"
+                                    className="form_button"
                                 >
                                     Create Account Today!
                                 </button>
