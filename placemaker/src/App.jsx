@@ -4,14 +4,24 @@ import { db } from "./firebase";
 
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
+import { useEffect } from "react";
+import { useAuth } from "./context/AuthContext"; // 🔐 AuthContext import
+
 import Login from './routes/Login'
-import Signup from './routes/SignUp'
+import Signup from './routes/Signup'
 import Landing from './routes/Landing'
 
-
-
 function App() {
-  //DUMMY CODE
+
+  // get global authenticated user
+  const { user } = useAuth();
+
+  // Log user whenever auth state changes
+  useEffect(() => {
+    console.log("Global User:", user);
+  }, [user]);
+
+  // DUMMY CODE (Firestore test)
   async function testFirestoreWrite() {
     try {
       const docRef = await addDoc(collection(db, "test"), {
@@ -27,14 +37,15 @@ function App() {
 
   return (
     <>
-    <button onClick={testFirestoreWrite}>
+      <button onClick={testFirestoreWrite}>
         Test Firestore Write
       </button>
-    <Routes>
-      <Route path="/" element={<Landing />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-    </Routes>
+
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+      </Routes>
     </>
   )
 }
