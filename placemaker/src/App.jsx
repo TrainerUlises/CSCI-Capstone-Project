@@ -5,7 +5,7 @@ import { db } from "./firebase";
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
 import Login from './routes/Login'
-import Signup from './routes/SignUp'
+import Signup from './routes/Signup'
 import Landing from './routes/Landing'
 
 
