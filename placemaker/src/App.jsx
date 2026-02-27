@@ -10,6 +10,9 @@ import Signup from './routes/SignUp'
 import Landing from './routes/Landing'
 
 import Post from './components/Post'
+import Profile from './routes/ProfileView'
+import FeedView from './routes/FeedView'
+import Navbar from "./components/Navbar";
 
 
 
@@ -34,12 +37,15 @@ function App() {
     {/*<button onClick={testFirestoreWrite}>
         Test Firestore Write
       </button>*/}
+    <Navbar />
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 
       <Route path="/post" element={<Post/>} />
+      <Route path="/profile" element={<Profile/>} />
+      <Route path="/feed" element={<FeedView/>} />
     </Routes>
     </>
   )

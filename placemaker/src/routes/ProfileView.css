@@ -1,0 +1,306 @@
+/* Page */
+.profilePage {
+    background: #fbf3ef; 
+    min-height: calc(100vh - 64px);
+    padding: 28px 16px 60px;
+  }
+  
+  .profileContainer {
+    max-width: 920px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  
+  /* Shared card */
+  .card {
+    background: #ffffff;
+    border: 1px solid rgba(38, 18, 12, 0.08);
+    border-radius: 14px;
+    box-shadow: 0 10px 28px rgba(38, 18, 12, 0.06);
+  }
+  
+  .profileCard {
+    padding: 22px 22px 18px;
+  }
+  
+  .sectionCard {
+    padding: 18px 22px;
+  }
+  
+  /* Profile top row */
+  .profileTopRow {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 18px;
+    align-items: start;
+  }
+  
+  .avatar {
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #b85a2b; /* warm orange/brown */
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    font-size: 18px;
+  }
+  
+  .profileMeta {
+    padding-top: 2px;
+  }
+  
+  .profileName {
+    margin: 0 0 8px;
+    font-size: 22px;
+    line-height: 1.2;
+    color: #24130d;
+  }
+  
+  .metaLine {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    color: rgba(36, 19, 13, 0.75);
+    font-size: 13px;
+    margin: 4px 0;
+  }
+  
+  .metaIcon {
+    font-size: 13px;
+    opacity: 0.8;
+  }
+  
+  /* Buttons */
+  .btn {
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: transform 0.05s ease, box-shadow 0.15s ease;
+  }
+  
+  .btn:active {
+    transform: translateY(1px);
+  }
+  
+  .btnSecondary {
+    background: #fff;
+    border-color: rgba(184, 90, 43, 0.35);
+    color: #b85a2b;
+    box-shadow: 0 8px 18px rgba(184, 90, 43, 0.10);
+  }
+  
+  .editBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    white-space: nowrap;
+  }
+  
+  .btnIcon {
+    font-size: 13px;
+  }
+  
+  /* Bio + tags */
+  .profileBio {
+    margin: 14px 0 12px;
+    color: rgba(36, 19, 13, 0.82);
+    font-size: 14px;
+    line-height: 1.55;
+    max-width: 70ch;
+  }
+  
+  .tagRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .tag {
+    background: #c76533;
+    color: #fff;
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+  }
+  
+  /* Stats */
+  .statsRow {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  
+  .statCard {
+    padding: 18px 14px;
+    text-align: center;
+  }
+  
+  .statNumber {
+    font-size: 26px;
+    font-weight: 800;
+    color: #c76533;
+    margin-bottom: 6px;
+  }
+  
+  .statLabel {
+    font-size: 12px;
+    color: rgba(36, 19, 13, 0.70);
+    font-weight: 600;
+  }
+  
+  /* Section headers */
+  .sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  
+  .sectionIcon {
+    font-size: 16px;
+    opacity: 0.9;
+  }
+  
+  .sectionTitle {
+    margin: 0;
+    font-size: 16px;
+    color: #24130d;
+  }
+  
+  /* Settings rows */
+  .settingRow {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    padding: 14px 0;
+    border-top: 1px solid rgba(36, 19, 13, 0.08);
+  }
+  
+  .settingRow:first-of-type {
+    border-top: none;
+    padding-top: 6px;
+  }
+  
+  .settingRowLast {
+    padding-bottom: 6px;
+  }
+  
+  .settingTitle {
+    font-size: 13px;
+    font-weight: 700;
+    color: #24130d;
+    margin-bottom: 3px;
+  }
+  
+  .settingSub {
+    font-size: 12px;
+    color: rgba(36, 19, 13, 0.65);
+  }
+  
+  /* Toggle switch */
+  .switch {
+    position: relative;
+    width: 46px;
+    height: 26px;
+    display: inline-block;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: rgba(36, 19, 13, 0.18);
+    transition: 0.18s ease;
+    box-shadow: inset 0 0 0 1px rgba(36, 19, 13, 0.10);
+  }
+  
+  .slider::before {
+    content: "";
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    top: 3px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.14);
+    transition: 0.18s ease;
+  }
+  
+  .switch input:checked + .slider {
+    background: #c76533;
+  }
+  
+  .switch input:checked + .slider::before {
+    transform: translateX(20px);
+  }
+  
+  /* Contact */
+  .contactGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    border-top: 1px solid rgba(36, 19, 13, 0.08);
+    padding-top: 14px;
+  }
+  
+  .contactItem {
+    background: rgba(251, 243, 239, 0.7);
+    border: 1px solid rgba(36, 19, 13, 0.06);
+    border-radius: 12px;
+    padding: 12px 12px;
+  }
+  
+  .contactLabel {
+    font-size: 11px;
+    color: rgba(36, 19, 13, 0.60);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  
+  .contactValue {
+    font-size: 13px;
+    color: rgba(36, 19, 13, 0.86);
+    font-weight: 650;
+    overflow-wrap: anywhere;
+  }
+  
+  /* Responsive */
+  @media (max-width: 720px) {
+    .profileTopRow {
+      grid-template-columns: auto 1fr;
+      grid-template-areas:
+        "avatar meta"
+        "edit edit";
+    }
+  
+    .avatar { grid-area: avatar; }
+    .profileMeta { grid-area: meta; }
+    .editBtn {
+      grid-area: edit;
+      justify-self: start;
+    }
+  
+    .statsRow {
+      grid-template-columns: 1fr;
+    }
+  
+    .contactGrid {
+      grid-template-columns: 1fr;
+    }
+  }

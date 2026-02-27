@@ -1,4 +1,3 @@
-import Navbar from '../components/Navbar.jsx';
 import "./Login.css";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -55,7 +54,6 @@ export default function Login() {
 
     return (
         <div>
-            <Navbar />
             <main className="login">
                 <div className="login__container">
                     <h1 className="login__heading">Log In</h1>
