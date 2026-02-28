@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase";
 
 // Create a global authentication context
@@ -30,14 +30,24 @@ export function AuthProvider({ children }) {
         return () => unsubscribe();
     }, []);
 
+    //newly logout function
+    const logout = async () => {
+        try {
+            await signOut(auth);
+        } catch (error){
+            console.error("Issue logging out: ", error);
+        }
+    };
+
     // Value shared across placemaker
     const value = {
         user,
+        logout,
     };
 
     return (
         <AuthContext.Provider value={value}>
-            {/* Only rendering app once auth state is determined */}
+            {/* this will render app */}
             {!loading && children}
         </AuthContext.Provider>
     );
