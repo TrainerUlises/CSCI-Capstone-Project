@@ -1,5 +1,5 @@
 import "./Login.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -12,6 +12,7 @@ export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     // handle login
     async function handleLogin(e) {
@@ -28,7 +29,7 @@ export default function Login() {
 
             const user = userCredential.user;
 
-            console.log("✅ AUTH SUCCESS");
+            console.log("AUTH SUCCESS");
             console.log("UID:", user.uid);
             console.log("Email:", user.email);
 
@@ -37,14 +38,14 @@ export default function Login() {
             const userDocSnap = await getDoc(userDocRef);
 
             if (userDocSnap.exists()) {
-                console.log("✅ FIRESTORE USER FOUND");
+                console.log("FIRESTORE USER FOUND");
                 console.log("User Data:", userDocSnap.data());
             } else {
-                console.log("⚠️ No Firestore user document found.");
+                console.log("No Firestore user document found.");
             }
 
-            // No redirect yet we will create dashboard later
-            // navigate("/");
+            // redirect
+            navigate("/");
 
         } catch (err) {
             console.error(" LOGIN FAILED:", err.message);
