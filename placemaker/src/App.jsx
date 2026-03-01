@@ -5,6 +5,7 @@ import { db } from "./firebase";
 
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
+import Home from './routes/Home'
 import { useEffect } from "react";
 import { useAuth } from "./context/AuthContext"; // AuthContext import
 
@@ -12,6 +13,16 @@ import Login from './routes/Login'
 import Signup from './routes/Signup'
 import Landing from './routes/Landing'
 
+import Post from './components/Post'
+import Profile from './routes/ProfileView'
+import FeedView from './routes/FeedView'
+import Navbar from "./components/Navbar";
+
+
+
+function App() {
+  //DUMMY FIREBASE TEST CODE
+  /*
 function App() {
 
   // Get global authenticated user from AuthContext
@@ -34,18 +45,17 @@ function App() {
     } catch (error) {
       console.error("Error adding document:", error);
     }
-  }
+  }*/
 
   return (
     <>
-      <button onClick={testFirestoreWrite}>
+    {/*<button onClick={testFirestoreWrite}>
         Test Firestore Write
-      </button>
-
-      <Routes>
-
-        {/* added protected Landing Page */}
-        <Route
+      </button>*/}
+    <Navbar />
+    <Routes>
+      {/* added protected Landing Page */}
+      <Route
           path="/"
           element={
             <ProtectedRoute>
@@ -53,12 +63,13 @@ function App() {
             </ProtectedRoute>
           }
         />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
 
-        {/* Public routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-
-      </Routes>
+      {/*<Route path="/post" element={<Post/>} />*/}
+      <Route path="/profile" element={<Profile/>} />
+      <Route path="/feed" element={<FeedView/>} />
+    </Routes>
     </>
   );
 }
