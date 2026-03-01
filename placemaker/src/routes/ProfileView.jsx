@@ -35,8 +35,6 @@ export default function Profile() {
 
   return (
     <>
-      <Navbar />
-
       <main className="profilePage">
         <div className="profileContainer">
           {/* Top Profile Card */}

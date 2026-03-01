@@ -11,7 +11,6 @@ export default function home() {
 
     return (
         <div>
-            <Navbar />
              <main className="home">
                  <div className="home__container">
                     <div className="home__row">   
