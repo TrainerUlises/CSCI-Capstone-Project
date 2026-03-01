@@ -1,23 +1,17 @@
-import Navbar from '../components/Navbar.jsx';
 import "./Home.css";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../firebase.js";
-import { doc, getDoc } from "firebase/firestore";
-
-export default function home() {
+export default function Home() {
 
     return (
         <div>
              <main className="home">
                  <div className="home__container">
                     <div className="home__row">   
-                        <div className="home_left">
+                        <div className="home__left">
                         <div className="home__logo1">Logo 1</div>  
                         </div>  
-                         <div className="home_right">
+                         <div className="home__right">
                          <div className="home__card">  
                            <div className="home__logo2">Logo 2</div>
 

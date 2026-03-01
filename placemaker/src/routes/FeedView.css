@@ -159,12 +159,6 @@
   }
   
   /* Post card */
-  .feedList {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  
   .postCard {
     background: #fff;
     border-radius: 14px;
@@ -247,25 +241,30 @@
     font-weight: 700;
   }
   
+  /* Type badges (subtle but colored) */
   /* Type badges (subtle but distinct) */
-  .badge-requesthelp {
-    border-color: rgba(215,116,59,0.30);
-    background: rgba(215,116,59,0.10);
+  .badge-needsaid {
+    border-color: rgba(220, 38, 38, 0.35);
+    background: rgba(220, 38, 38, 0.10);
+    color: rgba(153, 27, 27, 0.95);
   }
   
-  .badge-offerhelp {
-    border-color: rgba(0,0,0,0.12);
+  .badge-offeraid {
+    border-color: rgba(37, 99, 235, 0.28);
+    background: rgba(37, 99, 235, 0.10);
+    color: rgba(30, 64, 175, 0.95);
+  }
+  
+  .badge-donationswap {
+    border-color: rgba(22, 163, 74, 0.28);
+    background: rgba(22, 163, 74, 0.10);
+    color: rgba(21, 128, 61, 0.95);
+  }
+  
+  .badge-other {
+    border-color: rgba(0,0,0,0.14);
     background: rgba(0,0,0,0.04);
-  }
-  
-  .badge-announcement {
-    border-color: rgba(0,0,0,0.12);
-    background: rgba(251,244,238,0.65);
-  }
-  
-  .badge-event {
-    border-color: rgba(215,116,59,0.22);
-    background: rgba(255,255,255,0.65);
+    color: rgba(0,0,0,0.70);
   }
   
   /* Body */
@@ -372,9 +371,4 @@
     display: grid;
     gap: 16px;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
-
-  .feedWrap {
-    max-width: 1100px;
-    margin: 0 auto;
   }

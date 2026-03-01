@@ -1,27 +1,9 @@
 import "./Post.css";
 
-export default function Post({ post }) {
-  /*const {
-    type,
-    title,
-    description,
-    author,
-    address,
-    time,
-    imageUrl,
-    urgent,
-  } = post;
-
-  const labelClass = {
-    "Needs Aid": "label-needs",
-    "Request Aid": "label-request",
-    "Donation/Swap": "label-donation",
-    "Other": "label-other",
-  }[type];*/
-
+export default function Post() {
   return (
     <div className="postBox">
-      
+
       <div className={`postLabel ${labelClass}`}>
         {type}
         {urgent && <span className="urgentDot">●</span>}

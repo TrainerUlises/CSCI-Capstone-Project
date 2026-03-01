@@ -61,7 +61,7 @@ export default function Signup() {
 
 
            // Redirect to login
-           navigate("/");
+           navigate("/login");
 
 
        } catch (err) {
@@ -88,7 +88,7 @@ export default function Signup() {
                                    <input
                                        id="name"
                                        className="form__input"
-                                       type="name"
+                                       type="text"
                                        value={name}
                                        onChange={(e) => setName(e.target.value)}
                                        required

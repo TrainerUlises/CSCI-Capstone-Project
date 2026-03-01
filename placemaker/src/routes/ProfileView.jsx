@@ -1,4 +1,3 @@
-import Navbar from "../components/Navbar.jsx";
 import "./ProfileView.css";
 import { useState } from "react";
 

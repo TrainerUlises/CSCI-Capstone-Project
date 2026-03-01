@@ -62,7 +62,7 @@ const MOCK_POSTS = [
   {
     id: "p6",
     type: "Needs Aid",
-    urgent: true,
+    urgent: false,
     title: "Elder check-in request (quick visit)",
     body: "My neighbor (an older adult living alone) hasn’t answered the door today. If someone nearby could do a quick check-in with me, I’d feel better.",
     author: { name: "Jordan Lee", initials: "JL", address: "228 W 14th St" },
@@ -73,6 +73,14 @@ const MOCK_POSTS = [
 ];
 
 const FILTERS = ["All", "Needs Aid", "Offer Aid", "Donation/Swap", "Other", "Urgent"];
+
+const TYPE_CLASS = {
+    "Needs Aid": "needsaid",
+    "Offer Aid": "offeraid",
+    "Donation/Swap": "donationswap",
+    "Other": "other",
+  };
+  
 
 function matchesFilter(post, activeFilter) {
   if (activeFilter === "All") return true;
@@ -122,14 +130,14 @@ export default function FeedView() {
         <div className="createCard">
           <div className="createTop">
             <div className="avatar">AR</div>
-            <div className="createInput" role="button" tabIndex={0}>
+            <button className="createInput" type="button" tabIndex={0}>
               Share something with your neighbors…
-            </div>
+            </button>
           </div>
 
           <div className="createActions">
             <button className="createBtn" type="button">
-              🆘 Needs Aid
+              🆘 Request Aid
             </button>
             <button className="createBtn" type="button">
               🤝 Offer Aid
@@ -148,7 +156,9 @@ export default function FeedView() {
         </div>
 
         <div className="feedGrid">
-          {filteredPosts.map((post) => (
+          {filteredPosts.map((post) => {
+          const typeKey = TYPE_CLASS[post.type] ?? "other";  
+          return(
             <article key={post.id} className="postCard">
               <header className="postHeader">
                 <div className="postAuthor">
@@ -166,9 +176,9 @@ export default function FeedView() {
                     </div>
                   </div>
                 </div>
-
+                
                 <div className="postBadges">
-                  <span className={`badge badge-${post.type.replace(/[^\w]/g, "").toLowerCase()}`}>
+                <span className={`badge badge-${typeKey}`}>
                     {post.type}
                   </span>
 
@@ -204,7 +214,7 @@ export default function FeedView() {
                 </div>
               </footer>
             </article>
-          ))}
+          )})}
         </div>
       </div>
     </div>
