@@ -1,31 +1,30 @@
+import "./Landing.css";
 import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import { useAuth } from "../context/AuthContext";
 
-export default function Landing()
-{
-  const { user, logout } = useAuth();
+export default function Landing() {
 
-  return (
-    <div>
-      <Navbar />
+    return (
+        <div>
+             <main className="home">
+                 <div className="home__container">
+                    <div className="home__row">   
+                        <div className="home__left">
+                        <div className="home__logo1">Logo 1</div>  
+                        </div>  
+                         <div className="home__right">
+                         <div className="home__card">  
+                           <div className="home__logo2">Logo 2</div>
 
-      <br />
-
-      <div>
-        {/* will display who's logged on */}
-        <p>Welcome: {user?.email}</p>
-
-        <br />
-
-        <button onClick={logout}>
-          Logout
-        </button>
-
-        <br /><br />
-
-        <Link to="/signup">Sign Up Today!</Link>
-      </div>
-    </div>
-  );
+                             <h1 className="home__heading"> Get connected today! </h1>
+                                <div className ="home__actions">
+                            <Link to="/login" className="home__button"> Log In</Link>
+                            <Link to="/signup" className="home__button"> Sign Up</Link>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    )
 }
