@@ -10,7 +10,7 @@ const MOCK_POSTS = [
     body: "Hi neighbors — I’m recovering from a knee injury and can’t clear my front steps. If anyone nearby can help before 7pm, I’d really appreciate it. I have a shovel and hot cocoa.",
     author: { name: "Sarah Johnson", initials: "SJ", address: "230 W 14th St" },
     time: "1 hour ago",
-    details: { neededBy: "Today, 7:00 PM" },
+    details: { neededBy: "Today, 7:00 PM" }, //gonna just change this to neededBy though
     imageUrl: null,
   },
   {
@@ -148,10 +148,6 @@ export default function FeedView() {
             <button className="createBtn createBtnPrimary" type="button">
               ✍️ Create Post
             </button>
-          </div>
-
-          <div className="createHint">
-            Tip: Mark urgent Needs Aid posts to boost visibility on your block.
           </div>
         </div>
 
