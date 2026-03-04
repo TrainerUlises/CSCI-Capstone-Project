@@ -6,7 +6,7 @@ function ProfileSettingsButton() {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        navigate("/profileSettings");
+        navigate("/profile-settings");
     }
 
     return (<button className="btn btnSecondary editBtn" type="button" onClick={handleClick}>

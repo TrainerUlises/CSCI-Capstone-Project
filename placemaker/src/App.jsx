@@ -70,7 +70,7 @@ function App() {
 
       {/*<Route path="/post" element={<Post/>} />*/}
       <Route path="/profile" element={<Profile />} />
-      <Route path="/profileSettings" element={<ProfileSettings />} />
+      <Route path="/profile-settings" element={<ProfileSettings />} />
       <Route path="/feed" element={<FeedView/>} />
     </Routes>
     </>
