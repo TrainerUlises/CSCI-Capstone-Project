@@ -5,10 +5,7 @@ import { db } from "./firebase";
 
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
-import { useEffect } from "react";
-import { useAuth } from "./context/AuthContext"; // AuthContext import
 
-import Landing from './routes/Landing'
 import Home from './routes/Home'
 import { useEffect } from "react";
 import { useAuth } from "./context/AuthContext"; // AuthContext import
@@ -21,11 +18,7 @@ import FeedView from './routes/FeedView'
 import Navbar from "./components/Navbar";
 import Landing from './routes/Landing'
 
-import Post from './components/Post'
-import Profile from './routes/ProfileView'
 import ProfileSettings from './routes/ProfileSettings'
-import FeedView from './routes/FeedView'
-import Navbar from "./components/Navbar";
 
 
 
