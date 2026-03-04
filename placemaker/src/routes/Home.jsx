@@ -1,9 +1,7 @@
-import "./Landing.css";
+import "./Home.css";
 import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import { useAuth } from "../context/AuthContext";
 
-export default function Landing() {
+export default function Home() {
 
     return (
         <div>
