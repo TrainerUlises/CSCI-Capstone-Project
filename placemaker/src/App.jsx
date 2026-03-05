@@ -52,15 +52,7 @@ function App() {
       </button>*/}
     <Navbar />
     <Routes>
-      {/* added protected Landing Page */}
-      <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Landing />
-            </ProtectedRoute>
-          }
-        />
+      <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 
