@@ -1,5 +1,8 @@
 import "./FeedView.css";
 import { useMemo, useState } from "react";
+import CreatePostBox from "./CreatePostBox";
+import { collection, addDoc, serverTimestamp, doc, getDoc } from "firebase/firestore";
+import { db, auth } from "../firebase";
 
 const MOCK_POSTS = [
   {
@@ -89,6 +92,44 @@ function matchesFilter(post, activeFilter) {
 }
 
 export default function FeedView() {
+  const userProfile = {
+    name: "Alex Rivera",
+    zipcode: "10010",
+  };
+
+  async function handleCreatePost(postData) {
+    const firebaseUser = auth.currentUser;
+  
+    if (!firebaseUser) {
+      throw new Error("No logged-in user found.");
+    }
+  
+    // get the user document using UID
+    const userRef = doc(db, "users", firebaseUser.uid);
+    const userSnap = await getDoc(userRef);
+  
+    if (!userSnap.exists()) {
+      throw new Error("User profile not found.");
+    }
+  
+    const userData = userSnap.data();
+  
+    await addDoc(collection(db, "posts"), {
+      userId: firebaseUser.uid,
+      type: postData.type || "Other",
+      urgent: postData.urgent ?? false,
+      title: postData.title,
+      body: postData.body,
+  
+      authorName: userData.name || "Unknown User",
+      zipCode: userData.zipCode || "",
+  
+      timestamp: serverTimestamp(),
+      neededBy: postData.neededBy || "",
+      imageUrl: postData.imageUrl || "",
+    });
+  }
+
   const [activeFilter, setActiveFilter] = useState("All");
 
   const filteredPosts = useMemo(() => {
@@ -127,29 +168,13 @@ export default function FeedView() {
         </div>
 
         {/* PLACEHOLDER FOR CREATEPOST */}
-        <div className="createCard">
-          <div className="createTop">
-            <div className="avatar">AR</div>
-            <button className="createInput" type="button" tabIndex={0}>
-              Share something with your neighbors…
-            </button>
-          </div>
-
-          <div className="createActions">
-            <button className="createBtn" type="button">
-              🆘 Request Aid
-            </button>
-            <button className="createBtn" type="button">
-              🤝 Offer Aid
-            </button>
-            <button className="createBtn" type="button">
-              ♻️ Donation/Swap
-            </button>
-            <button className="createBtn createBtnPrimary" type="button">
-              ✍️ Create Post
-            </button>
-          </div>
-        </div>
+        <CreatePostBox
+          currentUser={{
+            displayName: "Unknown User",
+            zipCode: "Unknown Neighborhood",
+          }}
+          onCreatePost={handleCreatePost}
+        />
 
         <div className="feedGrid">
           {filteredPosts.map((post) => {
