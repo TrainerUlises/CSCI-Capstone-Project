@@ -1,5 +1,7 @@
 import "./FeedView.css";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react"; // new imports made
+import { collection, query, orderBy, onSnapshot } from "firebase/firestore"; // new imports
+import { db } from "../firebase"; // new imports
 
 const MOCK_POSTS = [
   {
@@ -90,10 +92,61 @@ function matchesFilter(post, activeFilter) {
 
 export default function FeedView() {
   const [activeFilter, setActiveFilter] = useState("All");
+  const [posts, setPosts] = useState([]); // adding state for real posts
 
-  const filteredPosts = useMemo(() => {
+  //adding real time firestore listener
+  // functionality
+  // listens to post collections
+  // orders by newest first
+  // converts firestore time
+  // updates in real time
+
+  useEffect(() => {
+    const q = query(
+      collection(db, "posts"),
+      orderBy("timestamp", "desc")
+    );
+  
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetchedPosts = snapshot.docs.map((doc) => {
+        const data = doc.data();
+  
+        return {
+          id: doc.id,
+          ...data,
+          time: data.timestamp?.toDate
+            ? data.timestamp.toDate().toLocaleString()
+            : "Just now",
+          author: {
+            name: data.authorName,
+            initials: data.authorName
+              ?.split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase(),
+            address: data.zipCode,
+          },
+          details: {
+            neededBy: data.neededBy,
+          },
+        };
+      });
+  
+      setPosts(fetchedPosts);
+    });
+  
+    return () => unsubscribe();
+  }, []);
+  
+
+  /*const filteredPosts = useMemo(() => {
     return MOCK_POSTS.filter((p) => matchesFilter(p, activeFilter));
-  }, [activeFilter]);
+  }, [activeFilter]);*/ //updating this!
+
+  // replacing mock_posts with real posts
+  const filteredPosts = useMemo(() => {
+    return posts.filter((p) => matchesFilter(p, activeFilter));
+  }, [posts, activeFilter]);
 
   return (
     <div className="feedPage">
