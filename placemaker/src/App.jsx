@@ -66,7 +66,15 @@ function App() {
 
       {/*<Route path="/post" element={<Post/>} />*/}
       <Route path="/profile" element={<Profile/>} />
-      <Route path="/feed" element={<FeedView/>} />
+      <Route
+        path="/feed"
+        element={
+          <ProtectedRoute>
+            <FeedView />
+          </ProtectedRoute>
+        }
+      />
+
     </Routes>
     </>
   );
