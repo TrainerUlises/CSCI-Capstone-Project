@@ -1,7 +1,16 @@
+import { db } from "../firebase";
 import "./FeedView.css";
 import { useEffect, useMemo, useState } from "react"; // new imports made
-import { collection, query, orderBy, onSnapshot } from "firebase/firestore"; // new imports
-import { db } from "../firebase"; // new imports
+//cleaner import
+import {
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+  doc,
+  getDoc
+} from "firebase/firestore";
+import { useAuth } from "../context/AuthContext";
 
 const MOCK_POSTS = [
   {
@@ -93,6 +102,8 @@ function matchesFilter(post, activeFilter) {
 export default function FeedView() {
   const [activeFilter, setActiveFilter] = useState("All");
   const [posts, setPosts] = useState([]); // adding state for real posts
+  const { user } = useAuth(); // adding this for real time render of user instead of hardcoded user
+  const [userData, setUserData] = useState(null);
 
   //adding real time firestore listener
   // functionality
@@ -137,6 +148,26 @@ export default function FeedView() {
   
     return () => unsubscribe();
   }, []);
+
+  //will fetch real logged-in uder info
+  useEffect(() => {
+    if (!user) return;
+  
+    const fetchUser = async () => {
+      try {
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+  
+        if (userDocSnap.exists()) {
+          setUserData(userDocSnap.data());
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+  
+    fetchUser();
+  }, [user]);
   
 
   /*const filteredPosts = useMemo(() => {
@@ -153,10 +184,15 @@ export default function FeedView() {
       <div className="feedWrap">
         <div className="feedHero">
           <div className="feedHeroTop">
-            <h1>Welcome back, Alex</h1>
-            <p>
-              Your village on <strong>234 W 14th St</strong>
-            </p>
+          <h1>
+            Welcome back, {userData?.name || "Neighbor"}
+          </h1>
+
+          <p>
+            Your residency on{" "}
+            <strong>{userData?.addressLine1 || "your block"}</strong>
+          </p>
+
           </div>
 
           <div className="feedHeroChips">
