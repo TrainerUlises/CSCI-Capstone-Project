@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useAuth } from "../context/AuthContext";
 
-export default function Landing() {
+export default function Home() {
 
     return (
         <div>
@@ -17,7 +17,8 @@ export default function Landing() {
                          <div className="home__card">  
                            <div className="home__logo2">Logo 2</div>
 
-                             <h1 className="home__heading"> Get connected today! </h1>
+                             <h1 className="home__heading"> Welcome </h1>
+                                <p className="home__subheading"> Get connected today! </p>
                                 <div className ="home__actions">
                             <Link to="/login" className="home__button"> Log In</Link>
                             <Link to="/signup" className="home__button"> Sign Up</Link>

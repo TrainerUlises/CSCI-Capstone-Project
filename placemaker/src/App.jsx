@@ -56,22 +56,23 @@ function App() {
       </button>*/}
     <Navbar />
     <Routes>
-      {/* added protected Landing Page */}
-      <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Landing />
-            </ProtectedRoute>
-          }
-        />
+      <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 
       {/*<Route path="/post" element={<Post/>} />*/}
-      <Route path="/profile" element={<Profile />} />
       <Route path="/profile-settings" element={<ProfileSettings />} />
       <Route path="/feed" element={<FeedView/>} />
+      <Route path="/profile" element={<Profile/>} />
+      <Route
+        path="/feed"
+        element={
+          <ProtectedRoute>
+            <FeedView />
+          </ProtectedRoute>
+        }
+      />
+
     </Routes>
     </>
   );
