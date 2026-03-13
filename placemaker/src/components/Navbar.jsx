@@ -1,18 +1,27 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./components.css";
+import logo from "../assets/logo.png";
 
 export default function Navbar() {
+  const location = useLocation();
+  const isLanding = location.pathname === "/";
   return (
     <header className="navbar">
       <div className="navbar__brand">
-        <div className="navbar__logoBox" aria-hidden="true">
-          
+        <div className="navbar__logoBox"><img src={logo} alt="placemaker logo" />
         </div>
 
         <Link to="/" className="navbar__title">
           placemaker
         </Link>
       </div>
+      {!isLanding && (
+        <nav className="navbar__links">
+          <Link to="feed">Feed</Link>
+          <Link to="profile">Profile</Link>
+        </nav>
+      )}
+
     </header>
   );
 }

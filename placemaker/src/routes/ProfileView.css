@@ -104,11 +104,17 @@
     white-space: nowrap;
   }
   
+/* Use to hide edit button if not owner of profile */
+.editBtnHidden {
+    pointer-events: none;
+    visibility: hidden;
+}
+
   .btnIcon {
     font-size: 13px;
   }
   
-  /* Bio + tags */
+/* Bio */
   .profileBio {
     margin: 14px 0 12px;
     color: rgba(36, 19, 13, 0.82);
@@ -250,8 +256,8 @@
     transform: translateX(20px);
   }
   
-  /* Contact */
-  .contactGrid {
+/* Account Info */
+.infoGrid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
@@ -259,21 +265,21 @@
     padding-top: 14px;
   }
   
-  .contactItem {
+.infoItem {
     background: rgba(251, 243, 239, 0.7);
     border: 1px solid rgba(36, 19, 13, 0.06);
     border-radius: 12px;
     padding: 12px 12px;
   }
   
-  .contactLabel {
+.infoLabel {
     font-size: 11px;
     color: rgba(36, 19, 13, 0.60);
     font-weight: 700;
     margin-bottom: 6px;
   }
   
-  .contactValue {
+.infoValue {
     font-size: 13px;
     color: rgba(36, 19, 13, 0.86);
     font-weight: 650;
@@ -289,8 +295,14 @@
         "edit edit";
     }
   
-    .avatar { grid-area: avatar; }
-    .profileMeta { grid-area: meta; }
+    .avatar {
+        grid-area: avatar;
+    }
+
+    .profileMeta {
+        grid-area: meta;
+    }
+
     .editBtn {
       grid-area: edit;
       justify-self: start;
@@ -299,8 +311,57 @@
     .statsRow {
       grid-template-columns: 1fr;
     }
+
+    .infoGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Settings Form */
+.formGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.fullWidth {
+    grid-column: 1 / -1;
+}
   
-    .contactGrid {
+.formLabel {
+    font-size: 12px;
+    font-weight: 700;
+    color: #24130d;
+}
+
+.formInput,
+.formTextarea {
+    border-radius: 10px;
+    border: 1px solid rgba(36, 19, 13, 0.15);
+    padding: 8px 10px;
+    font-size: 13px;
+    background: #fff;
+    transition: border 0.15s ease, box-shadow 0.15s ease;
+    resize: none;
+    font-family: system-ui;
+}
+
+    .formInput:focus,
+    .formTextarea:focus {
+        outline: none;
+        border-color: #c76533;
+        box-shadow: 0 0 0 2px rgba(199, 101, 51, 0.15);
+    }
+
+@media (max-width: 720px) {
+    .formGrid {
       grid-template-columns: 1fr;
     }
   }

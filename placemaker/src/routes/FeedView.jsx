@@ -1,3 +1,4 @@
+import { db } from "../firebase";
 import "./FeedView.css";
 import { useMemo, useState } from "react";
 import CreatePostBox from "./CreatePostBox";
@@ -131,20 +132,98 @@ export default function FeedView() {
   }
 
   const [activeFilter, setActiveFilter] = useState("All");
+  const [posts, setPosts] = useState([]); // adding state for real posts
+  const { user } = useAuth(); // adding this for real time render of user instead of hardcoded user
+  const [userData, setUserData] = useState(null);
 
-  const filteredPosts = useMemo(() => {
+  //adding real time firestore listener
+  // functionality
+  // listens to post collections
+  // orders by newest first
+  // converts firestore time
+  // updates in real time
+
+  useEffect(() => {
+    const q = query(
+      collection(db, "posts"),
+      orderBy("timestamp", "desc")
+    );
+  
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetchedPosts = snapshot.docs.map((doc) => {
+        const data = doc.data();
+  
+        return {
+          id: doc.id,
+          ...data,
+          time: data.timestamp?.toDate
+            ? data.timestamp.toDate().toLocaleString()
+            : "Just now",
+          author: {
+            name: data.authorName,
+            initials: data.authorName
+              ?.split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase(),
+            address: data.zipCode,
+          },
+          details: {
+            neededBy: data.neededBy,
+          },
+        };
+      });
+  
+      setPosts(fetchedPosts);
+    });
+  
+    return () => unsubscribe();
+  }, []);
+
+  //will fetch real logged-in uder info
+  useEffect(() => {
+    if (!user) return;
+  
+    const fetchUser = async () => {
+      try {
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+  
+        if (userDocSnap.exists()) {
+          setUserData(userDocSnap.data());
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+  
+    fetchUser();
+  }, [user]);
+  
+
+  /*const filteredPosts = useMemo(() => {
     return MOCK_POSTS.filter((p) => matchesFilter(p, activeFilter));
-  }, [activeFilter]);
+  }, [activeFilter]);*/ //updating this!
+
+  // replacing mock_posts with real posts
+  const filteredPosts = useMemo(() => {
+    return posts.filter((p) => matchesFilter(p, activeFilter));
+  }, [posts, activeFilter]);
 
   return (
     <div className="feedPage">
       <div className="feedWrap">
         <div className="feedHero">
           <div className="feedHeroTop">
-            <h1>Welcome back, Alex</h1>
-            <p>
-              Your village on <strong>234 W 14th St</strong>
-            </p>
+          <h1>
+            Welcome back, {userData?.name || "Neighbor"}
+          </h1>
+
+          <p>
+            Your residency on{" "}
+            <strong>{userData?.addressLine1 || "your block"}</strong>
+          </p>
+
           </div>
 
           <div className="feedHeroChips">
