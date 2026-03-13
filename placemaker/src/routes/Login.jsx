@@ -45,7 +45,7 @@ export default function Login() {
             }
 
             // redirect
-            navigate("/");
+            navigate("/feed");
 
         } catch (err) {
             console.error(" LOGIN FAILED:", err.message);
