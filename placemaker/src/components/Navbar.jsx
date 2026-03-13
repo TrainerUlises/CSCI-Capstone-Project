@@ -15,7 +15,7 @@ export default function Navbar() {
         <div className="navbar__logoBox">
           <img src={logo} alt="placemaker logo" />
         </div>
-        <Link to="/feed" className="navbar__title">
+        <Link to= {user ? "/feed" : "/"} className="navbar__title">
           placemaker
         </Link>
       </div>
