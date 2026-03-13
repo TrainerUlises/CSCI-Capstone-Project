@@ -22,6 +22,7 @@ export default function Navbar() {
       {!isLanding && user && (
         <nav className="navbar__links">
           <Link to="/feed">Feed</Link>
+          <Link to="/neighbors">Neighbors</Link>
           <Link to="/profile">Profile</Link>
         </nav>
       )}

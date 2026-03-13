@@ -1,0 +1,93 @@
+.neighbors {
+    width: 100%;
+    min-height: calc(100vh - 72px);
+    background: #fbf4ee;
+    padding: 34px 18px;
+    display: flex;
+    justify-content: center;
+}
+
+.neighbors__container {
+    width: 100%;
+    max-width: 1020px;
+}
+
+.neighbors__list-header {
+    color: #752c0c;
+    font-size: 30px;
+    font-weight:600;
+    margin-bottom: 10px;
+}
+
+.neighbors__list-subheader {
+    font-size: 18px;
+    color: #6b5442;
+}
+
+.neighbors__map-container{
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    justify-items: center;
+}
+
+.neighbors__card {
+    background: #ffffff;
+    border: 1px solid rgba(38, 18, 12, 0.08);
+    border-radius: 14px;
+    width: 80%;
+    box-shadow: 0 10px 28px rgba(38, 18, 12, 0.06);
+    padding: 22px 22px 18px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 18px;
+    align-items: start;
+}
+
+.neighbors__avatar {
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #b85a2b;
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    font-size: 18px;
+}
+
+.neighbors__info {
+    padding-top: 2px;
+}
+
+.neighbors__name {
+    margin: 0 0 8px;
+    font-size: 22px;
+    line-height: 1.2;
+    color: #24130d;
+}
+
+.neighbors__info-line {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    color: rgba(36, 19, 13, 0.75);
+    font-size: 14px;
+    margin: 4px 0;
+}
+
+.neighbors__button {
+    color: #2b1810;
+    background-color: #fdf7f2;
+    text-align: center;
+    padding: 10px 20px;
+    border: 1px solid;
+    border-color: #d9763926;
+    font-weight: 500;
+    font-size: 14px;
+    border-radius: 8px;
+    width: 100%;
+    justify-self: center;
+}
