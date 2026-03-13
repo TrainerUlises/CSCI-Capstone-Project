@@ -1,10 +1,13 @@
-import { db } from "../firebase";
 import "./FeedView.css";
 import { useMemo, useState } from "react";
 import CreatePostBox from "./CreatePostBox";
 import { collection, addDoc, serverTimestamp, doc, getDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
+import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
+import { onSnapshot, query, orderBy } from "firebase/firestore";
 
+/*
 const MOCK_POSTS = [
   {
     id: "p1",
@@ -74,7 +77,7 @@ const MOCK_POSTS = [
     details: { neededBy: "Today (ASAP)" },
     imageUrl: null,
   },
-];
+];*/
 
 const FILTERS = ["All", "Needs Aid", "Offer Aid", "Donation/Swap", "Other", "Urgent"];
 
