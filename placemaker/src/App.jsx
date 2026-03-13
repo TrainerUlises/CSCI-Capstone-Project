@@ -16,6 +16,7 @@ import Post from './components/Post' // leave just to test post component
 import Profile from './routes/ProfileView'
 import FeedView from './routes/FeedView'
 import Navbar from "./components/Navbar";
+import Neighbors from "./routes/Neighbors"
 import Landing from './routes/Landing'
 
 import ProfileSettings from './routes/ProfileSettings'
@@ -64,6 +65,7 @@ function App() {
       <Route path="/signup" element={<Signup />} />
 
       {/*<Route path="/post" element={<Post/>} />*/}
+      <Route path="/neighbors" element={<Neighbors />} />
       <Route path="/profile-settings" element={<ProfileSettings />} />
       {/*<Route path="/feed" element={<FeedView/>} />*/}
       <Route 
