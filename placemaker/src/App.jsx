@@ -48,7 +48,8 @@ function App() {
       console.error("Error adding document:", error);
     }
   }*/
-
+  
+  const { user } = useAuth();
   return (
     <>
     {/*<button onClick={testFirestoreWrite}>
@@ -56,13 +57,30 @@ function App() {
       </button>*/}
     <Navbar />
     <Routes>
-      <Route path="/" element={<Landing />} />
+      <Route path="/" element={user ? <FeedView /> : <Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 
       {/*<Route path="/post" element={<Post/>} />*/}
-      <Route path="/profile" element={<Profile/>} />
-      <Route path="/feed" element={<ProtectedRoute><FeedView/></ProtectedRoute>} />
+      <Route path="/profile-settings" element={<ProfileSettings />} />
+      {/*<Route path="/feed" element={<FeedView/>} />*/}
+      <Route 
+        path="/profile" 
+        element={
+          <ProtectedRoute>
+            <Profile/>
+          </ProtectedRoute>
+        } 
+        />
+      <Route
+        path="/feed"
+        element={
+          <ProtectedRoute>
+            <FeedView />
+          </ProtectedRoute>
+        }
+      />
+
     </Routes>
     </>
   );

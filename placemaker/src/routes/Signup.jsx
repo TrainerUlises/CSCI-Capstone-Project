@@ -60,8 +60,8 @@ export default function Signup() {
            console.log("User successfully created");
 
 
-           // Redirect to login
-           navigate("/login");
+           // Redirect to feed if signup is successful
+           navigate("/feed");
 
 
        } catch (err) {
