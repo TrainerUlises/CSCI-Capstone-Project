@@ -48,7 +48,8 @@ function App() {
       console.error("Error adding document:", error);
     }
   }*/
-
+  
+  const { user } = useAuth();
   return (
     <>
     {/*<button onClick={testFirestoreWrite}>
@@ -56,7 +57,7 @@ function App() {
       </button>*/}
     <Navbar />
     <Routes>
-      <Route path="/" element={<Landing />} />
+      <Route path="/" element={user ? <FeedView /> : <Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 
