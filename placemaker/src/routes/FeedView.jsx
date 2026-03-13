@@ -79,11 +79,11 @@ const MOCK_POSTS = [
   },
 ];*/
 
-const FILTERS = ["All", "Needs Aid", "Offer Aid", "Donation/Swap", "Other", "Urgent"];
+const FILTERS = ["All", "Needs Aid", "Offering Aid", "Donation/Swap", "Other", "Urgent"];
 
 const TYPE_CLASS = {
     "Needs Aid": "needsaid",
-    "Offer Aid": "offeraid",
+    "Offering Aid": "offeraid",
     "Donation/Swap": "donationswap",
     "Other": "other",
   };
@@ -95,12 +95,13 @@ function matchesFilter(post, activeFilter) {
   return post.type === activeFilter;
 }
 
-export default function FeedView() {
-  const userProfile = {
-    name: "Alex Rivera",
-    zipcode: "10010",
-  };
+function normalizePostType(type) {
+  if (type === "Request Aid") return "Needs Aid";
+  if (type === "Offer Aid") return "Offering Aid";
+  return type || "Other";
+}
 
+export default function FeedView() {
   async function handleCreatePost(postData) {
     const firebaseUser = auth.currentUser;
   
@@ -155,10 +156,12 @@ export default function FeedView() {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const fetchedPosts = snapshot.docs.map((doc) => {
         const data = doc.data();
+        const normalizedType = normalizePostType(data.type);
   
         return {
           id: doc.id,
           ...data,
+          type: normalizedType,
           time: data.timestamp?.toDate
             ? data.timestamp.toDate().toLocaleString()
             : "Just now",
@@ -249,12 +252,7 @@ export default function FeedView() {
           ))}
         </div>
 
-        {/* PLACEHOLDER FOR CREATEPOST */}
         <CreatePostBox
-          currentUser={{
-            displayName: "Unknown User",
-            zipCode: "Unknown Neighborhood",
-          }}
           onCreatePost={handleCreatePost}
         />
 

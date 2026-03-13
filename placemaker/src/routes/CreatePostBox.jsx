@@ -2,8 +2,8 @@ import { useState } from "react";
 import "./FeedView.css";
 
 const POST_TYPES = {
-  REQUEST: "Request Aid",
-  OFFER: "Offer Aid",
+  REQUEST: "Needs Aid",
+  OFFER: "Offering Aid",
   DONATION: "Donation/Swap",
   OTHER: "Other",
 };
@@ -42,8 +42,6 @@ function CreatePostBox({ currentUser, onCreatePost }) {
         urgent,
         title: title.trim(),
         body: body.trim(),
-        authorName: currentUser?.displayName || "Unknown User",
-        zipCode: currentUser?.zipCode || "",
         neededBy: neededBy.trim() || "",
         imageUrl: "",
       };
@@ -85,7 +83,7 @@ function CreatePostBox({ currentUser, onCreatePost }) {
           className={`createChip ${type === POST_TYPES.OFFER ? "isActive" : ""}`}
           onClick={() => setType(POST_TYPES.OFFER)}
         >
-          🤝 Offer Aid
+          🤝 Offering Aid
         </button>
 
         <button
