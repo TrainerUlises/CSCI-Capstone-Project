@@ -2,7 +2,7 @@ import "./Login.css"; // reusing styling
 
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; 
 
 
 import { auth, db } from "../firebase.js";
@@ -144,6 +144,7 @@ export default function Signup() {
                                        id="password"
                                        className="form__input"
                                        type="password"
+                                       autoComplete="new-password"
                                        value={password}
                                        onChange={(e) => setPassword(e.target.value)}
                                        required
@@ -197,6 +198,14 @@ export default function Signup() {
                                    </button>
                                </div>
                            </div>
+                           <div style={{ textAlign: "center", marginTop: "16px"}}>
+                                <span style={{ fontSize: "14px"}}>
+                                    Already have an account?{" "}
+                                    <Link to="/login" className="form__link">
+                                        Log in here!
+                                    </Link>
+                                </span>
+                            </div>
 
 
                        </form>
