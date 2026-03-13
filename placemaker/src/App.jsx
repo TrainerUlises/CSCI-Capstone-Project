@@ -62,8 +62,15 @@ function App() {
 
       {/*<Route path="/post" element={<Post/>} />*/}
       <Route path="/profile-settings" element={<ProfileSettings />} />
-      <Route path="/feed" element={<FeedView/>} />
-      <Route path="/profile" element={<Profile/>} />
+      {/*<Route path="/feed" element={<FeedView/>} />*/}
+      <Route 
+        path="/profile" 
+        element={
+          <ProtectedRoute>
+            <Profile/>
+          </ProtectedRoute>
+        } 
+        />
       <Route
         path="/feed"
         element={
