@@ -4,7 +4,7 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebase";
 
 import './App.css'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 
 import Home from './routes/Home'
 import { useEffect } from "react";
@@ -57,7 +57,9 @@ function App() {
       </button>*/}
     <Navbar />
     <Routes>
-      <Route path="/" element={user ? <FeedView /> : <Landing />} />
+      <Route 
+        path="/" element={user ? <Navigate to="/feed" replace /> : <Landing />} 
+      />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 

@@ -7,11 +7,11 @@
   }
 
   .feedWrap {
-    max-width: 720px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     gap: 16px;
+    max-width: 1232px;
   }
   
   .feedHero {
@@ -20,6 +20,7 @@
     border-radius: 14px;
     padding: 18px 18px 16px;
     box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+    max-width: 1200px;
   }
   
   .feedHeroTop h1 {
@@ -91,6 +92,7 @@
     padding: 14px;
     border: 1px solid rgba(0,0,0,0.07);
     box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+    max-width: 1200px;
   }
   
   .createTop {
@@ -138,12 +140,190 @@
     font-size: 12px;
     color: rgba(0,0,0,0.55);
   }
+
+  .createPostBox {
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  
+  .createPostHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .createPostHeaderText h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #2c2c2c;
+  }
+  
+  .createPostHeaderText p {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.55);
+  }
+  
+  .createTypeRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  .createChip {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: #f8f7f5;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.15s ease;
+  }
+  
+  .createChip:hover {
+    background: #f2eee9;
+  }
+  
+  .createChip.isActive {
+    background: rgba(215, 116, 59, 0.12);
+    border-color: rgba(215, 116, 59, 0.45);
+    color: #9f4f21;
+    font-weight: 600;
+  }
+  
+  .urgentInline {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+  }
+  
+  .urgentInline input {
+    accent-color: #d7743b;
+  }
+  
+  .createField {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .createLabel {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.72);
+  }
+  
+  .optionalText {
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.45);
+  }
+  
+  .createTextInput,
+  .createTextarea {
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: rgba(251, 244, 238, 0.55);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 14px;
+    color: #2c2c2c;
+    outline: none;
+    font-family: inherit;
+  }
+  
+  .createTextInput:focus,
+  .createTextarea:focus {
+    border-color: rgba(215, 116, 59, 0.45);
+    box-shadow: 0 0 0 3px rgba(215, 116, 59, 0.12);
+  }
+  
+  .createTextarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+  
+  .createMeta {
+    align-self: flex-end;
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.45);
+  }
+  
+  .createError {
+    font-size: 12px;
+    color: #b42318;
+  }
+  
+  .createFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  
+  .createHint {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.55);
+  }
+  
+  .createFooterActions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .createBtn {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: #fff;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  
+  .createBtnPrimary {
+    background: #d7743b;
+    color: #fff;
+    border-color: transparent;
+  }
+  
+  .createBtnPrimary:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  
+  @media (max-width: 640px) {
+    .urgentInline {
+      margin-left: 0;
+      width: 100%;
+    }
+  
+    .createFooter {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .createFooterActions {
+      justify-content: flex-end;
+    }
+  }
   
   /* Avatar */
   .avatar {
     width: 40px;
     height: 40px;
-    border-radius: 999px;
+    border-radius: 50%;
+    flex-shrink: 0;
     background: #8b3b1f;
     color: #fff;
     display: grid;
@@ -370,5 +550,5 @@
   .feedGrid {
     display: grid;
     gap: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, 389px);
   }

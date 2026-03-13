@@ -1,17 +1,13 @@
-import { db } from "../firebase";
 import "./FeedView.css";
-import { useEffect, useMemo, useState } from "react"; // new imports made
-//cleaner import
-import {
-  collection,
-  query,
-  orderBy,
-  onSnapshot,
-  doc,
-  getDoc
-} from "firebase/firestore";
+import { useMemo, useState } from "react";
+import CreatePostBox from "./CreatePostBox";
+import { collection, addDoc, serverTimestamp, doc, getDoc } from "firebase/firestore";
+import { db, auth } from "../firebase";
 import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
+import { onSnapshot, query, orderBy } from "firebase/firestore";
 
+/*
 const MOCK_POSTS = [
   {
     id: "p1",
@@ -21,7 +17,7 @@ const MOCK_POSTS = [
     body: "Hi neighbors — I’m recovering from a knee injury and can’t clear my front steps. If anyone nearby can help before 7pm, I’d really appreciate it. I have a shovel and hot cocoa.",
     author: { name: "Sarah Johnson", initials: "SJ", address: "230 W 14th St" },
     time: "1 hour ago",
-    details: { neededBy: "Today, 7:00 PM" },
+    details: { neededBy: "Today, 7:00 PM" }, //gonna just change this to neededBy though
     imageUrl: null,
   },
   {
@@ -81,13 +77,13 @@ const MOCK_POSTS = [
     details: { neededBy: "Today (ASAP)" },
     imageUrl: null,
   },
-];
+];*/
 
-const FILTERS = ["All", "Needs Aid", "Offer Aid", "Donation/Swap", "Other", "Urgent"];
+const FILTERS = ["All", "Needs Aid", "Offering Aid", "Donation/Swap", "Other", "Urgent"];
 
 const TYPE_CLASS = {
     "Needs Aid": "needsaid",
-    "Offer Aid": "offeraid",
+    "Offering Aid": "offeraid",
     "Donation/Swap": "donationswap",
     "Other": "other",
   };
@@ -99,7 +95,46 @@ function matchesFilter(post, activeFilter) {
   return post.type === activeFilter;
 }
 
+function normalizePostType(type) {
+  if (type === "Request Aid") return "Needs Aid";
+  if (type === "Offer Aid") return "Offering Aid";
+  return type || "Other";
+}
+
 export default function FeedView() {
+  async function handleCreatePost(postData) {
+    const firebaseUser = auth.currentUser;
+  
+    if (!firebaseUser) {
+      throw new Error("No logged-in user found.");
+    }
+  
+    // get the user document using UID
+    const userRef = doc(db, "users", firebaseUser.uid);
+    const userSnap = await getDoc(userRef);
+  
+    if (!userSnap.exists()) {
+      throw new Error("User profile not found.");
+    }
+  
+    const userData = userSnap.data();
+  
+    await addDoc(collection(db, "posts"), {
+      userId: firebaseUser.uid,
+      type: postData.type || "Other",
+      urgent: postData.urgent ?? false,
+      title: postData.title,
+      body: postData.body,
+  
+      authorName: userData.name || "Unknown User",
+      zipCode: userData.zipCode || "",
+  
+      timestamp: serverTimestamp(),
+      neededBy: postData.neededBy || "",
+      imageUrl: postData.imageUrl || "",
+    });
+  }
+
   const [activeFilter, setActiveFilter] = useState("All");
   const [posts, setPosts] = useState([]); // adding state for real posts
   const { user } = useAuth(); // adding this for real time render of user instead of hardcoded user
@@ -121,10 +156,12 @@ export default function FeedView() {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const fetchedPosts = snapshot.docs.map((doc) => {
         const data = doc.data();
+        const normalizedType = normalizePostType(data.type);
   
         return {
           id: doc.id,
           ...data,
+          type: normalizedType,
           time: data.timestamp?.toDate
             ? data.timestamp.toDate().toLocaleString()
             : "Just now",
@@ -215,34 +252,9 @@ export default function FeedView() {
           ))}
         </div>
 
-        {/* PLACEHOLDER FOR CREATEPOST */}
-        <div className="createCard">
-          <div className="createTop">
-            <div className="avatar">AR</div>
-            <button className="createInput" type="button" tabIndex={0}>
-              Share something with your neighbors…
-            </button>
-          </div>
-
-          <div className="createActions">
-            <button className="createBtn" type="button">
-              🆘 Request Aid
-            </button>
-            <button className="createBtn" type="button">
-              🤝 Offer Aid
-            </button>
-            <button className="createBtn" type="button">
-              ♻️ Donation/Swap
-            </button>
-            <button className="createBtn createBtnPrimary" type="button">
-              ✍️ Create Post
-            </button>
-          </div>
-
-          <div className="createHint">
-            Tip: Mark urgent Needs Aid posts to boost visibility on your block.
-          </div>
-        </div>
+        <CreatePostBox
+          onCreatePost={handleCreatePost}
+        />
 
         <div className="feedGrid">
           {filteredPosts.map((post) => {
