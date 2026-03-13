@@ -136,9 +136,10 @@ export default function FeedView() {
   }
 
   const [activeFilter, setActiveFilter] = useState("All");
-  const [posts, setPosts] = useState([]); // adding state for real posts
-  const { user } = useAuth(); // adding this for real time render of user instead of hardcoded user
+  const [posts, setPosts] = useState([]); // real posts
+  const { user } = useAuth(); // real time render
   const [userData, setUserData] = useState(null);
+  const urgentCount = posts.filter(p => p.urgent).length;
 
   //adding real time firestore listener
   // functionality
@@ -234,7 +235,9 @@ export default function FeedView() {
 
           <div className="feedHeroChips">
             <span className="chip chip-soft">Location Verified</span>
-            <span className="chip chip-soft">2 urgent needs</span>
+            <span className="chip chip-soft">
+            {urgentCount} urgent {urgentCount === 1 ? "need" : "needs"}
+            </span>
           </div>
         </div>
 
