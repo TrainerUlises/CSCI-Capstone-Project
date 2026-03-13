@@ -323,7 +323,8 @@
   .avatar {
     width: 40px;
     height: 40px;
-    border-radius: 999px;
+    border-radius: 50%;
+    flex-shrink: 0;
     background: #8b3b1f;
     color: #fff;
     display: grid;
