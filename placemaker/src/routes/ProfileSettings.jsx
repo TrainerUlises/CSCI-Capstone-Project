@@ -1,6 +1,8 @@
 import "./ProfileView.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { auth, db } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 
 function ProfileSettingsButton() {
@@ -26,6 +28,7 @@ export default function Profile() {
     const [bio, setbio] = useState("");
     const [helpDesc, setHelpDesc] = useState("");
 
+    const currentUser = auth.currentUser;
 
     const [notifs, setNotifs] = useState({
         newPosts: true,
