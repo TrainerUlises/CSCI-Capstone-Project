@@ -60,6 +60,7 @@ export default function Profile() {
         .map((w) => w[0]?.toUpperCase())
         .join("");
 
+    const createdAt = user.createdAt.toDate();
     return (
         <>
             <main className="profilePage">
@@ -76,12 +77,12 @@ export default function Profile() {
 
                                 <div className="metaLine">
                                     <span className="metaIcon" aria-hidden="true">📍</span>
-                                    <span>{user.location}</span>
+                                    <span>{user.addressLine1}</span>
                                 </div>
 
                                 <div className="metaLine">
                                     <span className="metaIcon" aria-hidden="true">🗓️</span>
-                                    <span>Member since {user.memberSince}</span>
+                                    <span>Member since {createdAt.toLocaleDateString()} </span>
                                 </div>
                             </div>
                             <ProfileSettingsButton />
@@ -105,7 +106,7 @@ export default function Profile() {
 
                             <div className="infoItem">
                                 <div className="infoLabel">Address</div>
-                                <div className="infoValue">{user.location}</div>
+                                <div className="infoValue">{user.addressLine1}</div>
                             </div>
 
                             <div className="infoItem">
