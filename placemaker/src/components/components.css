@@ -64,6 +64,56 @@
   transition-timing-function: ease;
   white-space: nowrap;
 }
+
+.navbar__links a:hover {
+  color: #D97639;
+}
+
+/* Autocomplete  */
+
+.addressAutocomplete {
+  position: relative;
+  width: 100%;
+}
+
+.addressAutocomplete__dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #c5ccd3;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  z-index: 20;
+  overflow: hidden;
+}
+
+.addressAutocomplete__item {
+  width: 100%;
+  border: 0;
+  background: #fff;
+  text-align: left;
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.addressAutocomplete__item:hover {
+  background: #f6f6f6;
+}
+
+.addressAutocomplete__main {
+  font-size: 14px;
+  color: #111;
+}
+
+.addressAutocomplete__secondary {
+  font-size: 12px;
+  color: #666;
+}
  
 /* Regular nav links */
 .navbar__pill-item {
