@@ -1,30 +1,74 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-
 import "./components.css";
 import logo from "../assets/logo.png";
 
 export default function Navbar() {
   const location = useLocation();
-  const isLanding = location.pathname === "/";
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const isActive = (path) => location.pathname === path;
+
+  // Logout function
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+  };
 
   return (
     <header className="navbar">
+      {/* Logo */}
       <div className="navbar__brand">
-        <div className="navbar__logoBox">
+        <Link to={user ? "/feed" : "/"} className="navbar__logoBox">
           <img src={logo} alt="placemaker logo" />
-        </div>
-        <Link to="/feed" className="navbar__title">
-          placemaker
         </Link>
       </div>
-      {!isLanding && user && (
-        <nav className="navbar__links">
-          <Link to="/feed">Feed</Link>
-          <Link to="/profile">Profile</Link>
-        </nav>
-      )}
+
+      {/* Right Side Navigation */}
+      <nav className="navbar__pill">
+        {!user && (
+          <Link
+            to="/login"
+            className={`navbar__pill-signin ${isActive("/login") ? "active" : ""}`}
+          >
+            Log In
+          </Link>
+        )}
+
+        {user && (
+          <>
+            <Link
+              to="/feed"
+              className={`navbar__pill-item ${isActive("/feed") ? "active" : ""}`}
+            >
+              Feed
+            </Link>
+
+            <Link
+              to="/neighbors"
+              className={`navbar__pill-item ${isActive("/neighbors") ? "active" : ""}`}
+            >
+              Neighbors
+            </Link>
+
+            <Link
+              to="/profile"
+              className={`navbar__pill-item ${isActive("/profile") ? "active" : ""}`}
+            >
+              Profile
+            </Link>
+
+            {/* Added a sign out Button */}
+            <button
+              onClick={handleLogout}
+              className="navbar__pill-item navbar__logout"
+            >
+              Sign Out
+            </button>
+          </>
+        )}
+      </nav>
     </header>
   );
 }
