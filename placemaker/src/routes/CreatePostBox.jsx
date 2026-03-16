@@ -65,7 +65,6 @@ function CreatePostBox({ currentUser, onCreatePost }) {
 
         <div className="createPostHeaderText">
           <h3>Create a post</h3>
-          <p>Share something useful with your neighbors</p>
         </div>
       </div>
 

@@ -18,7 +18,7 @@ export default function Landing() {
                            <div className="home__logo2">Logo 2</div>
 
                              <h1 className="home__heading"> Welcome </h1>
-                                <p className="home__subheading"> Get connected today! </p>
+                                <p className="home__subheading"> Get connected with your community today! </p>
                                 <div className ="home__actions">
                             <Link to="/login" className="home__button"> Log In</Link>
                             <Link to="/signup" className="home__button"> Sign Up</Link>
