@@ -4,6 +4,7 @@ import "./components.css";
 
 function AddressAutocomplete({
   onAddressSelected,
+  onInputChange,
   placeholder = "Enter your address...",
 }) {
   const [value, setValue] = useState("");
@@ -61,6 +62,10 @@ function AddressAutocomplete({
     const nextValue = e.target.value;
     setValue(nextValue);
 
+    if (onInputChange) {
+      onInputChange(nextValue);
+    }
+
     clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       fetchSuggestions(nextValue);
@@ -110,6 +115,11 @@ function AddressAutocomplete({
       setIsOpen(true);
     }
   }
+  function handleBlur() {
+    blurTimeoutRef.current = setTimeout(() => {
+      setIsOpen(false);
+    }, 150);
+  }
 
   return (
     <div className="addressAutocomplete">
@@ -119,7 +129,7 @@ function AddressAutocomplete({
         value={value}
         onChange={handleChange}
         onFocus={handleFocus}
-        //onBlur={handleBlur}
+        onBlur={handleBlur}
         placeholder={placeholder}
         autoComplete="off"
         required

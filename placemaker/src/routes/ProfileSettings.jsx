@@ -172,26 +172,28 @@ function ProfileSettingsButton() {
           <div className="formGrid">
             {user.email && (
               <div className="formGroup">
-                <label className="formLabel">Email</label>
+                <label className="formLabel" htmlFor="email">Email</label>
                 <input
+                  id="email"
                   type="text"
+                  name="email"
                   value={formData.email}
                   className="formInput"
-                  onChange={handleChange}
-                  
+                  onChange={handleChange} 
                 />
               </div>
             )}
 
             {user.addressLine1 && (
               <div className="formGroup">
-                <label className="formLabel">Address</label>
+                <label className="formLabel" htmlFor="addressLine1">Address</label>
                 <input
+                  id="addressLine1"
                   type="text"
+                  name="addressLine1"
                   value={formData.addressLine1}
                   className="formInput"
                   onChange={handleChange}
-                  
                 />
               </div>
             )}
@@ -211,7 +213,7 @@ function ProfileSettingsButton() {
             )}
             {user.name && (
             <div className="formGroup">
-                <label className="formLabel">Display Name</label>
+                <label className="formLabel" htmlFor="name">Display Name</label>
                 <input
                 id="name"
                 name="name"

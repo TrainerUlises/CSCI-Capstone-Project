@@ -51,7 +51,7 @@ export default function Profile() {
     //return <div>Loading...</div>;
   }
   if (!user) {
-    return <div></div>;
+    return <div>No user data available.</div>;
   }
   
     const initials = user.name

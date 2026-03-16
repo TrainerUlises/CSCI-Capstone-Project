@@ -12,6 +12,7 @@ import AddressAutocomplete from "../components/AddressAutocomplete";
 export default function Signup() {
    const navigate = useNavigate();
 
+
     const [name, setName] = useState("");
     const [address1, setAddress1] = useState("");
     const [email, setEmail] = useState("");
@@ -32,7 +33,7 @@ export default function Signup() {
     });
 
     function handleAddressSelected(location) {
-        console.log("Selected address:", location);
+        //console.log("Selected address:", location);
         setAddress1(location.formattedAddress || "");
         setZipCode(location.zipCode || "");
         setLocationData({
@@ -46,12 +47,14 @@ export default function Signup() {
             adminAreaLevel1: location.adminAreaLevel1 || "",
         });
     }
+    function handleAddressInputChange(value) {
+        setAddress1(value);
+    }
 
     async function handleSignup(e) {
         e.preventDefault();
         setError("");
-
-
+        
         try {
             // Creating Auth user
             const userCredential = await createUserWithEmailAndPassword(
@@ -126,7 +129,7 @@ export default function Signup() {
 
 
                                 <div className="form__group">
-                                    <label htmlFor="address1">Address Line 1</label>
+                                    <label>Address Line 1</label>
                                     {/*<input
                                         id="address1"
                                         className="form__input"
@@ -135,7 +138,9 @@ export default function Signup() {
                                         onChange={(e) => setAddress1(e.target.value)}
                                         required
                                     />*/}
-                                    <AddressAutocomplete onAddressSelected={handleAddressSelected} />
+                                    <AddressAutocomplete 
+                                        onInputChange={handleAddressInputChange}
+                                        onAddressSelected={handleAddressSelected} />
                                 </div>
                             </div>
 
