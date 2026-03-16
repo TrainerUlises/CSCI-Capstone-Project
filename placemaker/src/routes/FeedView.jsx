@@ -280,7 +280,6 @@ export default function FeedView() {
           </div>
 
           <div className="feedHeroChips">
-            <span className="chip chip-soft">Location Verified</span>
             <span className="chip chip-soft">
             {urgentCount} urgent {urgentCount === 1 ? "need" : "needs"}
             </span>
