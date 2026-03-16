@@ -74,12 +74,6 @@ export default function Profile() {
 
                             <div className="profileMeta">
                                 <h1 className="profileName">{user.name}</h1>
-
-                                <div className="metaLine">
-                                    <span className="metaIcon" aria-hidden="true">📍</span>
-                                    <span>{user.addressLine1}</span>
-                                </div>
-
                                 <div className="metaLine">
                                     <span className="metaIcon" aria-hidden="true">🗓️</span>
                                     <span>Member since {createdAt.toLocaleDateString()} </span>
@@ -87,8 +81,6 @@ export default function Profile() {
                             </div>
                             <ProfileSettingsButton />
                         </div>
-
-                        <p className="profileBio">{user.bio}</p>
                     </section>
 
                     {/* Contact Info */}
