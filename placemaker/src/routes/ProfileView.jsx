@@ -1,5 +1,8 @@
 import "./ProfileView.css";
 import { useNavigate } from "react-router-dom";
+import { auth, db } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { useState, useEffect } from "react";
 
 //To be made more of a format with profile settings
 function ProfileSettingsButton() {
@@ -8,7 +11,7 @@ function ProfileSettingsButton() {
     const handleClick = () => {
         navigate("/profile-settings");
     }
-
+    
     return (<button className="btn btnSecondary editBtn" type="button" onClick={handleClick}>
         <span className="btnIcon" aria-hidden="true">✎</span>
         Edit
@@ -16,29 +19,48 @@ function ProfileSettingsButton() {
 }
 
 export default function Profile() {
-    // Mock data (swap with Firestore later)
-    const user = {
-        name: "Alex Rivera",
-        location: "234 W 14th St",
-        memberSince: "January 2024",
-        bio: "Born and raised in Chelsea. Love gardening and organizing neighborhood cleanups!",
-        stats: { posts: 24, events: 8, following: 12 },
-        email: "alexrivera@email.com",
-        phone: "123-456-7890",
-        website: "N/A",
-        job: "Junior Botanist",
-        skills: "Cooking, cleaning, gardening",
-        workHours: "Mon-Fri 9AM-5PM",
-        availability: "Weekends and evenings",
-        helpDesc: "I can use my gardening experience to tend to plants for people on vacation."
-    };
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
+    useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+      if (!firebaseUser) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const userRef = doc(db, "users", firebaseUser.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+          setUser(userSnap.data());
+        } else {
+          console.error("No user profile found!");
+        }
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  if (!user) {
+    return <div>No user data available.</div>;
+  }
+  
     const initials = user.name
         .split(" ")
         .slice(0, 2)
         .map((w) => w[0]?.toUpperCase())
         .join("");
 
+    const createdAt = user.createdAt.toDate();
     return (
         <>
             <main className="profilePage">
@@ -55,12 +77,12 @@ export default function Profile() {
 
                                 <div className="metaLine">
                                     <span className="metaIcon" aria-hidden="true">📍</span>
-                                    <span>{user.location}</span>
+                                    <span>{user.addressLine1}</span>
                                 </div>
 
                                 <div className="metaLine">
                                     <span className="metaIcon" aria-hidden="true">🗓️</span>
-                                    <span>Member since {user.memberSince}</span>
+                                    <span>Member since {createdAt.toLocaleDateString()} </span>
                                 </div>
                             </div>
                             <ProfileSettingsButton />
@@ -84,7 +106,7 @@ export default function Profile() {
 
                             <div className="infoItem">
                                 <div className="infoLabel">Address</div>
-                                <div className="infoValue">{user.location}</div>
+                                <div className="infoValue">{user.addressLine1}</div>
                             </div>
 
                             <div className="infoItem">
@@ -137,15 +159,15 @@ export default function Profile() {
                     {/* Stats */}
                     <section className="statsRow" aria-label="Profile stats">
                         <div className="card statCard">
-                            <div className="statNumber">{user.stats.posts}</div>
+                            <div className="statNumber">{user.stats?.posts}</div>
                             <div className="statLabel">Posts</div>
                         </div>
                         <div className="card statCard">
-                            <div className="statNumber">{user.stats.events}</div>
+                            <div className="statNumber">{user.stats?.events}</div>
                             <div className="statLabel">Events</div>
                         </div>
                         <div className="card statCard">
-                            <div className="statNumber">{user.stats.following}</div>
+                            <div className="statNumber">{user.stats?.following}</div>
                             <div className="statLabel">Following</div>
                         </div>
                     </section>
