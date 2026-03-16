@@ -48,10 +48,10 @@ export default function Profile() {
     return () => unsubscribe();
   }, []);
   if (loading) {
-    return <div>Loading...</div>;
+    //return <div>Loading...</div>;
   }
   if (!user) {
-    return <div>No user data available.</div>;
+    return <div></div>;
   }
   
     const initials = user.name
@@ -95,7 +95,7 @@ export default function Profile() {
                     <section className="card sectionCard">
                         <div className="sectionHeader">
                             <span className="sectionIcon" aria-hidden="true">✉️</span>
-                            <h2 className="sectionTitle">Contact Information</h2>
+                            <h2 className="sectionTitle">User Information</h2>
                         </div>
 
                         <div className="infoGrid">
@@ -113,11 +113,6 @@ export default function Profile() {
                                 <div className="infoLabel">Phone Number</div>
                                 <div className="infoValue">{user.phone}</div>
                             </div>
-
-                            <div className="infoItem">
-                                <div className="infoLabel">Personal Website</div>
-                                <div className="infoValue">{user.website}</div>
-                            </div>
                         </div>
                     </section>
 
@@ -127,7 +122,10 @@ export default function Profile() {
                             <span className="sectionIcon" aria-hidden="true">👤</span>
                             <h2 className="sectionTitle">About Me</h2>
                         </div>
-
+                        <div className="infoItem fullWidth">
+                                <div className="infoLabel">Bio</div>
+                                <div className="infoValue">{user.bio}</div>
+                            </div>
                         <div className="infoGrid">
                             <div className="infoItem">
                                 <div className="infoLabel">Occupation</div>
@@ -145,30 +143,9 @@ export default function Profile() {
                             </div>
 
                             <div className="infoItem">
-                                <div className="infoLabel">When I'm Available</div>
-                                <div className="infoValue">{user.availability}</div>
+                                <div className="infoLabel">Personal Website</div>
+                                <div className="infoValue">{user.website}</div>
                             </div>
-
-                            <div className="infoItem fullWidth">
-                                <div className="infoLabel">How I Can Help Neighbors</div>
-                                <div className="infoValue">{user.helpDesc}</div>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Stats */}
-                    <section className="statsRow" aria-label="Profile stats">
-                        <div className="card statCard">
-                            <div className="statNumber">{user.stats?.posts}</div>
-                            <div className="statLabel">Posts</div>
-                        </div>
-                        <div className="card statCard">
-                            <div className="statNumber">{user.stats?.events}</div>
-                            <div className="statLabel">Events</div>
-                        </div>
-                        <div className="card statCard">
-                            <div className="statNumber">{user.stats?.following}</div>
-                            <div className="statLabel">Following</div>
                         </div>
                     </section>
 

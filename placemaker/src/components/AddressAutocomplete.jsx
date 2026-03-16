@@ -119,7 +119,7 @@ function AddressAutocomplete({
         value={value}
         onChange={handleChange}
         onFocus={handleFocus}
-        onBlur={handleBlur}
+        //onBlur={handleBlur}
         placeholder={placeholder}
         autoComplete="off"
         required
