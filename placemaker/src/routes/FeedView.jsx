@@ -5,7 +5,7 @@ import { collection, addDoc, serverTimestamp, doc, getDoc } from "firebase/fires
 import { db, auth } from "../firebase";
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
-import { onSnapshot, query, orderBy } from "firebase/firestore";
+import { onSnapshot, query, orderBy, where } from "firebase/firestore"; // modifying import to match user zipcodes
 
 /*
 const MOCK_POSTS = [
@@ -147,7 +147,7 @@ export default function FeedView() {
   // converts firestore time
   // updates in real time
 
-  useEffect(() => {
+  /*useEffect(() => {
     const q = query(
       collection(db, "posts"),
       orderBy("timestamp", "desc")
@@ -185,6 +185,52 @@ export default function FeedView() {
   
     return () => unsubscribe();
   }, []);
+  */
+
+  useEffect(() => {
+    // Waiting until userData displays and has a valid zipCode
+    if (!userData?.zipCode) return;
+  
+    const q = query(
+      collection(db, "posts"),
+      where("zipCode", "==", userData.zipCode), // Filter by user's zip
+      orderBy("timestamp", "desc") // Sort newest first
+    );
+  
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetchedPosts = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        const normalizedType = normalizePostType(data.type);
+  
+        return {
+          id: doc.id,
+          ...data,
+          type: normalizedType,
+          time: data.timestamp?.toDate
+            ? data.timestamp.toDate().toLocaleString()
+            : "Just now",
+          author: {
+            name: data.authorName,
+            initials: data.authorName
+              ?.split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase(),
+            address: data.zipCode,
+          },
+          details: {
+            neededBy: data.neededBy,
+          },
+        };
+      });
+  
+      setPosts(fetchedPosts);
+    });
+  
+    return () => unsubscribe();
+  }, [userData]);
+  
+
 
   //will fetch real logged-in uder info
   useEffect(() => {
