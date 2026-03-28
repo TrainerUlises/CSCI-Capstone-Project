@@ -233,7 +233,7 @@
   .createTextarea {
     width: 100%;
     border: 1px solid rgba(0, 0, 0, 0.08);
-    background: rgba(251, 244, 238, 0.55);
+    background: #ffffff;
     border-radius: 12px;
     padding: 12px 14px;
     font-size: 14px;

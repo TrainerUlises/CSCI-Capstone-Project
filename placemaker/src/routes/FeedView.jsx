@@ -125,13 +125,16 @@ export default function FeedView() {
       urgent: postData.urgent ?? false,
       title: postData.title,
       body: postData.body,
-  
+    
       authorName: userData.name || "Unknown User",
-      zipCode: userData.zipCode || "",
-  
+      zipCode: postData.locationPrivate?.zipCode || userData.zipCode || "",
+    
       timestamp: serverTimestamp(),
       neededBy: postData.neededBy || "",
       imageUrl: postData.imageUrl || "",
+    
+      locationPublic: postData.locationPublic || null,
+      locationPrivate: postData.locationPrivate || null,
     });
   }
 
@@ -217,8 +220,8 @@ export default function FeedView() {
               .map((n) => n[0])
               .join("")
               .toUpperCase(),
-            address: data.zipCode,
           },
+          locationPublic: data.locationPublic || null,
           details: {
             neededBy: data.neededBy,
           },
@@ -321,7 +324,8 @@ export default function FeedView() {
                     </div>
 
                     <div className="postSub">
-                      <span className="pin">📍</span> {post.author.address}
+                      <span className="pin">📍</span>{" "}
+                      {post.locationPublic?.neighborhood || "Approximate area"}
                     </div>
                   </div>
                 </div>
@@ -345,6 +349,19 @@ export default function FeedView() {
                   </div>
                 )}
               </div>
+              {post.locationPublic && (
+                <div className="postLocationCard">
+                  <div className="postLocationTitle">
+                    📍 {post.locationPublic.neighborhood || "Approximate area"}
+                  </div>
+                  <div className="postLocationMap">
+                    <div className="postLocationCircle" />
+                  </div>
+                  <div className="postLocationHint">
+                    Approximate location within {post.locationPublic.radiusMiles || 0.5} miles
+                  </div>
+                </div>
+              )}
 
               {post.imageUrl && (
                 <div className="postImageWrap">
