@@ -1,6 +1,8 @@
 ﻿import './Neighbors.css'
+import { useNavigate } from 'react-router-dom';
 
 export default function Neighbors() {
+    const navigate = useNavigate();
     //Swap with firestore data later
     const mockUsers = [
         { id: 1, name: "Alex Rivera", address: "123 3rd Avenue", bio: "Professional botanist that's always down to chat!" },
@@ -42,7 +44,8 @@ export default function Neighbors() {
                                             {user.bio}
                                     </div>
 
-                                    <button type="button" className="neighbors__button">View Profile</button>
+                                    <button type="button" className="neighbors__button" onClick={function() { navigate( `/profile/${user.id}` ); }}
+                                    >View Profile</button>
                                 </div>
                             </div>
                         );

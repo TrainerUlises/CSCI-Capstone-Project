@@ -6,6 +6,7 @@ import { db, auth } from "../firebase";
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 import { onSnapshot, query, orderBy, where } from "firebase/firestore"; // modifying import to match user zipcodes
+import toast from 'react-hot-toast';
 
 /*
 const MOCK_POSTS = [
@@ -233,7 +234,7 @@ export default function FeedView() {
   
 
 
-  //will fetch real logged-in uder info
+  //will fetch real logged-in user info
   useEffect(() => {
     if (!user) return;
   
@@ -262,6 +263,15 @@ export default function FeedView() {
   const filteredPosts = useMemo(() => {
     return posts.filter((p) => matchesFilter(p, activeFilter));
   }, [posts, activeFilter]);
+
+  function handleSharebutton(post) {
+    const text = `${post.title} \n\n${post.body}`;
+    navigator.clipboard.writeText(text).then(() => {
+    toast.success("Post copied to clipboard!");
+  }).catch(() => {
+    toast.error("Post failed, try again.");
+  });
+  }
 
   return (
     <div className="feedPage">
@@ -357,7 +367,7 @@ export default function FeedView() {
                   <button className="actionBtn actionPrimary" type="button">
                     Contact
                   </button>
-                  <button className="actionBtn" type="button">
+                  <button className="actionBtn" type="button" onClick={function() {handleSharebutton(post)}}>
                     Share
                   </button>
                 </div>

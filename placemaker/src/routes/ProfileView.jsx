@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useState, useEffect } from "react";
-
+import {getStorage, ref, uploadBytes, getDownloadURL} from "firebase/storage";
+import {updateDoc } from "firebase/firestore";
 //To be made more of a format with profile settings
 function ProfileSettingsButton() {
     const navigate = useNavigate();
@@ -21,6 +22,7 @@ function ProfileSettingsButton() {
 export default function Profile() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [photoURL, setPhotoURL] = useState(null);
 
     useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
@@ -35,6 +37,7 @@ export default function Profile() {
 
         if (userSnap.exists()) {
           setUser(userSnap.data());
+          setPhotoURL(userSnap.data().photoURL || null);
         } else {
           console.error("No user profile found!");
         }
@@ -54,11 +57,30 @@ export default function Profile() {
     return <div>No user data available.</div>;
   }
   
-    const initials = user.name
+    const initials = user?.name
         .split(" ")
         .slice(0, 2)
         .map((w) => w[0]?.toUpperCase())
-        .join("");
+        .join("") || "";
+
+    async function ProfilePictureUpload(event) {
+        if (!auth.currentUser) return;
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const storage = getStorage();
+        const storageRef = ref(storage, `profilePictures/${auth.currentUser.uid}_${Date.now()}`
+    );
+        
+        try {
+            await uploadBytes(storageRef, file);
+            const downloadURL = await getDownloadURL(storageRef);
+            setPhotoURL(downloadURL);
+            await updateDoc(doc(db, "users", auth.currentUser.uid), { photoURL: downloadURL });
+        } catch (err) {
+            console.error("Upload failed:", err);
+        }
+    }
 
     const createdAt = user.createdAt.toDate();
     return (
@@ -69,7 +91,12 @@ export default function Profile() {
                     <section className="card profileCard">
                         <div className="profileTopRow">
                             <div className="avatar" aria-hidden="true">
-                                {initials}
+                                {photoURL ? (
+                                    <img src={photoURL} alt={`${user.name}'s profile`} 
+                                        style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
+                                        ) : (
+                                        initials    
+                                    )}
                             </div>
 
                             <div className="profileMeta">
