@@ -69,35 +69,6 @@
   color: #D97639;
 }
 
-/* Regular nav links */
-.navbar__pill-item {
-  color: #7A5C4A;
-}
- 
-.navbar__pill-item:hover,
-.navbar__pill-item.active {
-  background: rgba(255, 255, 255, 0.6);
-  color: #3D1F10;
-}
- 
-/* Sign In — white card style */
-.navbar__pill-signin {
-  background: #FFFFFF;
-  color: #3D1F10;
-  border: 1px solid rgba(160, 100, 60, 0.2);
-  box-shadow: 0 1px 3px rgba(120, 70, 30, 0.08);
-}
- 
-.navbar__pill-signin:hover {
-  background: #FFFCF9;
-  box-shadow: 0 2px 6px rgba(120, 70, 30, 0.14);
-  color: #3D1F10;
-}
- 
-.navbar__pill-signin.active {
-  background: #FFFCF9;
-}
-
 /* Autocomplete  */
 
 .addressAutocomplete {
@@ -143,18 +114,32 @@
   font-size: 12px;
   color: #666;
 }
-
-.form__input {
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  font-size: 14px;
-  outline: none;
-  transition: border 0.15s ease, box-shadow 0.15s ease;
+ 
+/* Regular nav links */
+.navbar__pill-item {
+  color: #7A5C4A;
 }
-
-.form__input:focus {
-  border-color: #d7743b;
-  box-shadow: 0 0 0 2px rgba(215, 116, 59, 0.15);
+ 
+.navbar__pill-item:hover,
+.navbar__pill-item.active {
+  background: rgba(255, 255, 255, 0.6);
+  color: #3D1F10;
+}
+ 
+/* Sign In — white card style */
+.navbar__pill-signin {
+  background: #FFFFFF;
+  color: #3D1F10;
+  border: 1px solid rgba(160, 100, 60, 0.2);
+  box-shadow: 0 1px 3px rgba(120, 70, 30, 0.08);
+}
+ 
+.navbar__pill-signin:hover {
+  background: #FFFCF9;
+  box-shadow: 0 2px 6px rgba(120, 70, 30, 0.14);
+  color: #3D1F10;
+}
+ 
+.navbar__pill-signin.active {
+  background: #FFFCF9;
 }
