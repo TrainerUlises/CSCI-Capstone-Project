@@ -25,11 +25,36 @@
 }
 
 .neighbors__map-container{
-    margin-top: 50px;
+    margin-top: 25px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     justify-items: center;
+}
+
+.neighbors__search-bar-container {
+    margin-top: 25px;
+    display: flex;
+    justify-content: left;
+    justify-self: center;
+    width: 90%;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 14px;
+    color: #2c2c2c;
+    outline: none;
+    font-family: inherit;
+}
+
+.neighbors__search-bar {
+    margin-left: 15px;
+    width: 100%;
+}
+
+.neighbors__search-bar:focus {
+    outline: none;
 }
 
 .neighbors__card {
