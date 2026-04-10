@@ -67,9 +67,10 @@ function CreatePostBox({ currentUser, onCreatePost }) {
             locationData.locality ||
             locationData.zipCode ||
             "General area",
-          approxLat: snapped.lat,
-          approxLng: snapped.lng,
+          lat: snapped.lat,
+          lng: snapped.lng,
           radiusMiles: 0.5,
+          zoom: 14,
         },
         locationPrivate: {
           formattedAddress: locationData.formattedAddress || "",
