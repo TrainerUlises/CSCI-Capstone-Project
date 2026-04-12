@@ -46,6 +46,13 @@ export default function Navbar() {
             </Link>
 
             <Link
+              to="/explore"
+              className={`navbar__pill-item ${isActive("/explore") ? "active" : ""}`}
+            >
+              Explore
+            </Link>
+
+            <Link
               to="/neighbors"
               className={`navbar__pill-item ${isActive("/neighbors") ? "active" : ""}`}
             >

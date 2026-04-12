@@ -1,8 +1,9 @@
 import "./ProfileView.css";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, orderBy, onSnapshot } from "firebase/firestore"; // new imports 
 import { useState, useEffect } from "react";
+import Post from "../components/Post"; // new imports
 
 //To be made more of a format with profile settings
 function ProfileSettingsButton() {
@@ -21,6 +22,7 @@ function ProfileSettingsButton() {
 export default function Profile() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [posts, setPosts] = useState([]); // new profile view
 
     useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
@@ -46,7 +48,32 @@ export default function Profile() {
     });
 
     return () => unsubscribe();
+  
   }, []);
+
+  // another useEffect that will look at logged on user and queries firestore for posts where userID matches
+  useEffect(() =>{
+    const firebaseUser = auth.currentUser; // checking current user
+    if(!firebaseUser) return;
+
+    const q = query(
+       collection(db, "posts"),
+       where("userId", "==", firebaseUser.uid),
+       orderBy("timestamp", "desc") 
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+        const userPosts = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+
+        }));
+        setPosts(userPosts);
+    });
+    
+    return () => unsubscribe();
+}, []);
+
   if (loading) {
     //return <div>Loading...</div>;
   }
@@ -140,8 +167,23 @@ export default function Profile() {
                             </div>
                         </div>
                     </section>
+                    
+                    {/* This section will display profile info, about section, and a small section that displays your personal posts */}
+                    <section className="card sectionCard">
+                    <div className="sectionHeader">
+                        <h2 className="sectionTitle">My Personal Posts</h2>
+                    </div>
 
-                    {/*MAYBE PUT THAT SPECIFIC USER'S POSTS HERE AT THE BOTTOM?*/}
+                    {posts.length === 0 ? (
+                        <p>No posts</p>
+                    ) : (
+                        <div className="feedGrid">
+                        {posts.map((post) => (
+                            <Post key={post.id} post={post}/>
+                        ))}
+                        </div>
+                    )}
+                    </section>
                 </div>
             </main>
         </>

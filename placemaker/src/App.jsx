@@ -21,6 +21,7 @@ import Landing from './routes/Landing'
 
 import ProfileSettings from './routes/ProfileSettings'
 
+import ExploreView from "./routes/ExploreView"; // new import
 
 
 function App() {
@@ -84,7 +85,14 @@ function App() {
           </ProtectedRoute>
         }
       />
-
+      <Route 
+        path="/explore"
+        element={
+          <ProtectedRoute>
+            <ExploreView/>
+          </ProtectedRoute>
+        }
+      />
     </Routes>
     </>
   );
