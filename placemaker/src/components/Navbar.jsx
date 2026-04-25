@@ -66,6 +66,13 @@ export default function Navbar() {
               Profile
             </Link>
 
+            <Link
+              to="/inbox"
+              className={`navbar__pill-item ${isActive("/inbox") ? "active" : ""}`}
+            >
+              Inbox
+            </Link>
+
             {/* Added a sign out Button */}
             <button
               onClick={handleLogout}

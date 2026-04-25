@@ -23,6 +23,8 @@ import ProfileSettings from './routes/ProfileSettings'
 
 import ExploreView from "./routes/ExploreView"; // new import
 
+import Inbox from "./routes/Inbox";
+
 
 function App() {
   //DUMMY FIREBASE TEST CODE
@@ -68,6 +70,7 @@ function App() {
       {/*<Route path="/post" element={<Post/>} />*/}
       <Route path="/neighbors" element={<Neighbors />} />
       <Route path="/profile-settings" element={<ProfileSettings />} />
+      <Route path="/inbox" element={<Inbox />} />
       {/*<Route path="/feed" element={<FeedView/>} />*/}
       <Route 
         path="/profile" 
