@@ -1,0 +1,16 @@
+.inbox {
+    width: 100%;
+    min-height: calc(100vh - 72px);
+    background: #fbf4ee;
+    padding: 34px 18px;
+    display: flex; 
+    justify-content: center;
+}
+
+.inbox__chat-list{
+    width: 40%;
+}
+
+.inbox__chat-view{
+    width: 60%;
+}
