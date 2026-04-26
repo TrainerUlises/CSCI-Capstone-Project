@@ -1,4 +1,6 @@
 import "./Post.css";
+import { auth, db } from "../firebase"; // new import for delete post 
+import { deleteDoc, doc } from "firebase/firestore"; // new import for delete post
 
 function getLabelClass(type) {
   switch (type) {
@@ -49,6 +51,26 @@ export default function Post({ post }) {
     locationPublic?.neighborhood || "Approximate location";
   const radiusMiles = locationPublic?.radiusMiles || 0.5;
   const mapUrl = getStaticMapUrl(locationPublic);
+  const currUser = auth.currentUser; // needed for delete
+  const isOwner = currUser && post.userId === currUser.uid;  // strict comparison to ensure delete works
+
+  // delete func
+
+  const handleDelete = async () => 
+    {
+      const confirmDel = window.confirm(
+        "Delete this post?"
+      );
+      if(!confirmDel) return;
+
+      try {
+        await deleteDoc(doc(db, "posts", post.id));
+        console.log("Post has been deleted!");
+      } catch (error){
+        console.error("Error deleting!", error);
+      }
+    };
+
 
   return (
     <article className="postCard">
@@ -121,6 +143,17 @@ export default function Post({ post }) {
           <button className="actionBtn" type="button">
             Share
           </button>
+
+          {isOwner && (
+            <button
+            className="actionBtn actionDanger"
+            type="button"
+            onClick={handleDelete}
+            >
+              DELETE
+            </button>
+          )
+          }
         </div>
       </footer>
     </article>
