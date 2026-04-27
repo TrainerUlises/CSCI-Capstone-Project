@@ -125,6 +125,18 @@
   cursor: pointer;
   transition: background 0.2s;
 }
+.form__button--extrasmall {
+  width: 170px;
+  height: 24px;
+  border: none;
+  background: #D97639;
+  color: #ffffff;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
 
 .form__button--small:hover {
   background: #C85A2E;
@@ -142,6 +154,19 @@
 }
 
 .form__dateInput:focus {
+  border-color: #D97639;
+  box-shadow: 0 0 0 3px rgba(217, 118, 57, 0.15);
+}
+
+.form__group input[type="file"] {
+  border: none;
+  font-size: 15px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  background-color: #ffffff;
+}
+
+.form__group input [type="file"]:focus {
   border-color: #D97639;
   box-shadow: 0 0 0 3px rgba(217, 118, 57, 0.15);
 }

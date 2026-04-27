@@ -37,6 +37,7 @@ export default function Profile() {
 
         if (userSnap.exists()) {
           setUser(userSnap.data());
+          setPhotoURL(userSnap.data().photoURL || null);
         } else {
           console.error("No user profile found!");
         }
@@ -81,11 +82,30 @@ export default function Profile() {
     return <div>No user data available.</div>;
   }
   
-    const initials = user.name
+    const initials = user?.name
         .split(" ")
         .slice(0, 2)
         .map((w) => w[0]?.toUpperCase())
-        .join("");
+        .join("") || "";
+
+    async function ProfilePictureUpload(event) {
+        if (!auth.currentUser) return;
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const storage = getStorage();
+        const storageRef = ref(storage, `profilePictures/${auth.currentUser.uid}_${Date.now()}`
+    );
+        
+        try {
+            await uploadBytes(storageRef, file);
+            const downloadURL = await getDownloadURL(storageRef);
+            setPhotoURL(downloadURL);
+            await updateDoc(doc(db, "users", auth.currentUser.uid), { photoURL: downloadURL });
+        } catch (err) {
+            console.error("Upload failed:", err);
+        }
+    }
 
     const createdAt = user.createdAt.toDate();
     return (
@@ -96,7 +116,12 @@ export default function Profile() {
                     <section className="card profileCard">
                         <div className="profileTopRow">
                             <div className="avatar" aria-hidden="true">
-                                {initials}
+                                {photoURL ? (
+                                    <img src={photoURL} alt={`${user.name}'s profile`} 
+                                        style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
+                                        ) : (
+                                        initials    
+                                    )}
                             </div>
 
                             <div className="profileMeta">
