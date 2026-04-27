@@ -1,8 +1,8 @@
 ﻿import './Neighbors.css'
-import { useNavigate } from 'react-router-dom';
+import { React, useState } from "react";
 
 export default function Neighbors() {
-    const navigate = useNavigate();
+
     //Swap with firestore data later
     const mockUsers = [
         { id: 1, name: "Alex Rivera", address: "123 3rd Avenue", bio: "Professional botanist that's always down to chat!" },
@@ -12,13 +12,27 @@ export default function Neighbors() {
         { id: 5, name: "Petra Chambers", address: "2232 21st Street", bio: "Personal chef and hobby artist, if you ever need any pointers on cooking or painting, you know where to go!"}
     ];
 
+    //Search bar functionality
+    const [search, setSearch] = useState("");
+    const filteredUsers = mockUsers.filter(user => user.name.toLowerCase().includes(search.toLowerCase())
+        || user.address.toLowerCase().includes(search.toLowerCase()));
+
     return (<>
         <main className="neighbors">
             <div className="neighbors__container">
                 <h1 className="neighbors__list-header">Your Neighbors</h1>
                 <h2 className="neighbors__list-subheader">{mockUsers.length} neighbors near you</h2>
+                <div className="neighbors__search-bar-container">
+                    🔍
+                    <input
+                        className="neighbors__search-bar"
+                        type="text"
+                        placeholder="Search by name or address"
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
                 <div className="neighbors__map-container">
-                    {mockUsers.map((user) => {
+                    {filteredUsers.map((user) => {
                         const initials = user.name
                             .split(" ")
                             .slice(0, 2)

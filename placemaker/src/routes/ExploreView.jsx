@@ -80,14 +80,11 @@ export default function FeedView() {
   // converts firestore time
   // updates in real time
 
+
   useEffect(() => {
-    // Waiting until userData displays and has a valid zipCode
-    if (!userData?.zipCode) return;
-  
     const q = query(
       collection(db, "posts"),
-      where("zipCode", "==", userData.zipCode), // Filter by user's zip
-      orderBy("timestamp", "desc") // Sort newest first
+      orderBy("timestamp", "desc")
     );
   
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -121,11 +118,11 @@ export default function FeedView() {
     });
   
     return () => unsubscribe();
-  }, [userData]);
+  }, []);
   
 
 
-  //will fetch real logged-in user info
+  //will fetch real logged-in uder info
   useEffect(() => {
     if (!user) return;
   
@@ -154,15 +151,6 @@ export default function FeedView() {
   const filteredPosts = useMemo(() => {
     return posts.filter((p) => matchesFilter(p, activeFilter));
   }, [posts, activeFilter]);
-
-  function handleSharebutton(post) {
-    const text = `${post.title} \n\n${post.body}`;
-    navigator.clipboard.writeText(text).then(() => {
-    toast.success("Post copied to clipboard!");
-  }).catch(() => {
-    toast.error("Post failed, try again.");
-  });
-  }
 
   return (
     <div className="feedPage">

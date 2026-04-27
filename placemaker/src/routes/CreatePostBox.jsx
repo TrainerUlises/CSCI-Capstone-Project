@@ -1,4 +1,5 @@
 import { useState } from "react";
+import AddressAutocomplete from "../components/AddressAutocomplete";
 import "./FeedView.css";
 
 const POST_TYPES = {
@@ -8,12 +9,20 @@ const POST_TYPES = {
   OTHER: "Other",
 };
 
+function snapToGrid(lat, lng, gridSize = 0.01) {
+  return {
+    lat: Math.round(lat / gridSize) * gridSize,
+    lng: Math.round(lng / gridSize) * gridSize,
+  };
+}
+
 function CreatePostBox({ currentUser, onCreatePost }) {
   const [type, setType] = useState(POST_TYPES.REQUEST);
   const [urgent, setUrgent] = useState(false);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [neededBy, setNeededBy] = useState("");
+  const [locationData, setLocationData] = useState(null);
   const [error, setError] = useState("");
   const [isPosting, setIsPosting] = useState(false);
 
@@ -25,6 +34,7 @@ function CreatePostBox({ currentUser, onCreatePost }) {
     setTitle("");
     setBody("");
     setNeededBy("");
+    setLocationData(null);
     setError("");
   }
 
@@ -32,10 +42,17 @@ function CreatePostBox({ currentUser, onCreatePost }) {
     e.preventDefault();
     setError("");
   
-    if (!canSubmit) {
+    if (!title.trim() || !body.trim()) {
       setError("Please add a title and description.");
       return;
     }
+
+    if (!locationData?.lat || !locationData?.lng) {
+      setError("Please select an address from the dropdown.");
+      return;
+    }
+
+    const snapped = snapToGrid(locationData.lat, locationData.lng, 0.01);
   
     const payload = {
         type: type || POST_TYPES.OTHER,
@@ -44,6 +61,27 @@ function CreatePostBox({ currentUser, onCreatePost }) {
         body: body.trim(),
         neededBy: neededBy.trim() || "",
         imageUrl: "",
+        locationPublic: {
+          neighborhood:
+            locationData.neighborhood ||
+            locationData.locality ||
+            locationData.zipCode ||
+            "General area",
+          lat: snapped.lat,
+          lng: snapped.lng,
+          radiusMiles: 0.5,
+          zoom: 14,
+        },
+        locationPrivate: {
+          formattedAddress: locationData.formattedAddress || "",
+          placeId: locationData.placeId || "",
+          lat: locationData.lat,
+          lng: locationData.lng,
+          zipCode: locationData.zipCode || "",
+          neighborhood: locationData.neighborhood || "",
+          locality: locationData.locality || "",
+          adminAreaLevel1: locationData.adminAreaLevel1 || "",
+        },
       };
   
     try {
@@ -141,6 +179,17 @@ function CreatePostBox({ currentUser, onCreatePost }) {
           placeholder='e.g. "Today by 7pm" or "This weekend"'
           maxLength={60}
         />
+      </div>
+      <div className="createField">
+        <label className="createLabel">Location</label>
+        <AddressAutocomplete
+          onInputChange={() => setLocationData(null)}
+          onAddressSelected={setLocationData}
+          placeholder="Enter your address..."
+        />
+        <div className="createHint">
+          Only an approximate area will be shown on the post.
+        </div>
       </div>
 
       {error && <div className="createError">{error}</div>}

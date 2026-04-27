@@ -46,6 +46,13 @@ export default function Navbar() {
             </Link>
 
             <Link
+              to="/explore"
+              className={`navbar__pill-item ${isActive("/explore") ? "active" : ""}`}
+            >
+              Explore
+            </Link>
+
+            <Link
               to="/neighbors"
               className={`navbar__pill-item ${isActive("/neighbors") ? "active" : ""}`}
             >
@@ -57,6 +64,13 @@ export default function Navbar() {
               className={`navbar__pill-item ${isActive("/profile") ? "active" : ""}`}
             >
               Profile
+            </Link>
+
+            <Link
+              to="/inbox"
+              className={`navbar__pill-item ${isActive("/inbox") ? "active" : ""}`}
+            >
+              Inbox
             </Link>
 
             {/* Added a sign out Button */}

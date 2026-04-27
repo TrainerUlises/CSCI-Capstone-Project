@@ -30,8 +30,8 @@ export default function Login() {
             const user = userCredential.user;
 
             console.log("AUTH SUCCESS");
-            console.log("UID:", user.uid);
-            console.log("Email:", user.email);
+            //console.log("UID:", user.uid);
+            //console.log("Email:", user.email);
 
             // Verifying Firestore document exists
             const userDocRef = doc(db, "users", user.uid);
@@ -39,7 +39,7 @@ export default function Login() {
 
             if (userDocSnap.exists()) {
                 console.log("FIRESTORE USER FOUND");
-                console.log("User Data:", userDocSnap.data());
+                //console.log("User Data:", userDocSnap.data());
             } else {
                 console.log("No Firestore user document found.");
             }
