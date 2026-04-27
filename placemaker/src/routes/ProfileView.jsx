@@ -23,6 +23,10 @@ export default function Profile() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [posts, setPosts] = useState([]); // new profile view
+    const [photoURL, setPhotoURL] = useState(null); //profile picture
+    const [isAvailable, setIsAvailable] = useState(false); // local availability toggle state
+    const [expiration, setExpiration] = useState(null); // local expiration time state
+    const [tags, setTags] = useState([]); // local tags state
 
     useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
@@ -75,6 +79,27 @@ export default function Profile() {
     return () => unsubscribe();
 }, []);
 
+const tagOptions = ["Shoveling" , "Heavy Lifting", "Gardening", "Tech Help", "Childcare", "Pet Care", "Transportation", "Language Assistance", "Elderly Assistance", "Other"];
+
+const handleAvailability = (duration) => {
+    setIsAvailable(true);
+    const expirationTime = new Date(Date.now() + duration * 60 * 60 * 1000);
+    setExpiration(expirationTime);
+};
+
+const handleAway =() => {
+    setIsAvailable(false);
+    setExpiration(null);
+    setTags([]);
+};
+
+const toggleTag = (tag) => {
+    if (tags.includes(tag)) {
+        setTags(tags.filter(t => t !== tag));
+    } else {
+        setTags([...tags, tag]);
+    }
+};
   if (loading) {
     //return <div>Loading...</div>;
   }
@@ -126,12 +151,38 @@ export default function Profile() {
 
                             <div className="profileMeta">
                                 <h1 className="profileName">{user.name}</h1>
+                                <div className="availabilityStatus">
+                                    {isAvailable ? (
+                                        <span className="available">Available</span>
+                                    ) : (
+                                        <span className="notAvailable">Not Available</span>
+                                    )}
+                                </div>
                                 <div className="metaLine">
                                     <span className="metaIcon" aria-hidden="true">🗓️</span>
                                     <span>Member since {createdAt.toLocaleDateString()} </span>
                                 </div>
                             </div>
                             <ProfileSettingsButton />
+                            </div>
+                            <div className= "profileActions">
+                                <div className ="availabilityControls">
+                                <button className="btn btnPrimary" onClick={() => handleAvailability(1)}>Available for 1 hour</button>
+                                <button className="btn btnPrimary" onClick={() => handleAvailability(2)}>Available for 2 hours</button>
+                                <button className="btn btnPrimary" onClick={() => handleAvailability(3)}>Available for 3 hours</button>
+                                <button className="btn btnSecondary" onClick={handleAway}>Set Away</button>
+                                </div>
+                            <div className="tagSelector">
+                                {tagOptions.map((tag) => (
+                                    <button 
+                                        key={tag} 
+                                        className={`tagButton ${tags.includes(tag) ? "selected" : ""}`} 
+                                        onClick={() => toggleTag(tag)}
+                                    >
+                                        {tag}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </section>
 
