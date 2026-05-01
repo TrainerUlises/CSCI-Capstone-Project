@@ -27,7 +27,7 @@ export default function ChatView({ messages, selectedChatID, currentUser }) {
             <div className="chat-view__messages">
                 {chatMessages.map(message =>
                     <div key={message.id} className={message.senderID == currentUser ? "chat-view__your-message" : "chat-view__other-message"}>
-                        <div>{message.senderID}</div>
+                        <div>{message.senderID == currentUser ? "You" : message.senderID}</div>
                         <div>{message.text}</div>
                     </div>
                     )}

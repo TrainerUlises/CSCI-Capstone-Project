@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useInbox } from "../context/InboxContext";
 import "./components.css";
 import logo from "../assets/logo.png";
 
@@ -7,6 +8,7 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { unreadCount } = useInbox();
 
   const isActive = (path) => location.pathname === path;
 
@@ -71,6 +73,7 @@ export default function Navbar() {
               className={`navbar__pill-item ${isActive("/inbox") ? "active" : ""}`}
             >
               Inbox
+              <span className="navbar__notif-badge">{unreadCount < 100 ? unreadCount : "99+"}</span>
             </Link>
 
             {/* Added a sign out Button */}
