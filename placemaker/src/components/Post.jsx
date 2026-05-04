@@ -31,7 +31,7 @@ function getStaticMapUrl(locationPublic) {
   return `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=${zoom}&size=1200x500&scale=2&maptype=roadmap&markers=color:red%7C${lat},${lng}&key=${apiKey}`;
 }
 
-export default function Post({ post }) {
+export default function Post({ post, currentUser, onToggleRemove }) {
   const {
     type,
     urgent,
@@ -41,7 +41,8 @@ export default function Post({ post }) {
     author,
     time,
     locationPublic,
-    details
+    details,
+    isRemoved
   } = post;
 
   const labelClass = getLabelClass(type);
@@ -50,8 +51,12 @@ export default function Post({ post }) {
   const radiusMiles = locationPublic?.radiusMiles || 0.5;
   const mapUrl = getStaticMapUrl(locationPublic);
 
+  function handleToggleRemove() {
+      onToggleRemove(post.id, !post.isRemoved);
+  }
+
   return (
-    <article className="postCard">
+    <article className={`postCard ${isRemoved ? "postRemoved" : ""}`}>
       <header className="postHeader">
         <div className="postAuthor">
           <div className="avatar avatar-sm">{author?.initials}</div>
@@ -121,6 +126,15 @@ export default function Post({ post }) {
           <button className="actionBtn" type="button">
             Share
           </button>
+          {currentUser?.isAdmin && (
+          <button
+            className="actionBtn actionDanger"
+            type="button"
+            onClick={handleToggleRemove}
+          >
+            {post.isRemoved ? "Restore" : "Remove"}
+          </button>
+        )}
         </div>
       </footer>
     </article>

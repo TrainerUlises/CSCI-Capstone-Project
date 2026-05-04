@@ -2,7 +2,7 @@ import "./FeedView.css";
 import { useMemo, useState } from "react";
 import CreatePostBox from "./CreatePostBox";
 import Post from "../components/Post";
-import { collection, addDoc, serverTimestamp, doc, getDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
@@ -54,6 +54,7 @@ export default function FeedView() {
       urgent: postData.urgent ?? false,
       title: postData.title,
       body: postData.body,
+      isRemoved: false,
     
       authorName: userData.name || "Unknown User",
       zipCode: postData.locationPrivate?.zipCode || userData.zipCode || "",
@@ -152,8 +153,27 @@ export default function FeedView() {
 
   // replacing mock_posts with real posts
   const filteredPosts = useMemo(() => {
-    return posts.filter((p) => matchesFilter(p, activeFilter));
-  }, [posts, activeFilter]);
+    return posts
+      .filter((p) => !p.isRemoved || userData?.isAdmin) // 👈 add this line
+      .filter((p) => matchesFilter(p, activeFilter));
+  }, [posts, activeFilter, userData]);
+
+  async function onToggleRemove(postId, isRemoved) {
+    try {
+      const ref = doc(db, "posts", postId);
+  
+      await updateDoc(ref, { isRemoved });
+  
+      // update UI immediately
+      setPosts((prev) =>
+        prev.map((p) =>
+          p.id === postId ? { ...p, isRemoved } : p
+        )
+      );
+    } catch (err) {
+      console.error("Error updating post:", err);
+    }
+  }
 
   return (
     <div className="feedPage">
@@ -198,7 +218,11 @@ export default function FeedView() {
 
         <div className="feedGrid">
           {filteredPosts.map((post) => (
-            <Post key={post.id} post={post} />
+            <Post 
+              key={post.id} 
+              post={post} 
+              currentUser={userData}
+              onToggleRemove={onToggleRemove} />
           ))}
         </div>
       </div>
