@@ -1,8 +1,96 @@
 import "./ChatView.css";
 import { useState } from "react";
 
-export default function ChatView({ messages, selectedChatID, currentUser }) {
-    const chatMessages = messages[selectedChatID] || [];
+//Mock data for loading messages from specific chat
+const mockMessages = {
+    chat1: [
+        {
+            id: "m1",
+            senderID: "Alice",
+            text: "Bye Balice",
+            createdAt: 1710
+        },
+        {
+            id: "m2",
+            senderID: "Balice",
+            text: "See you tomorrow",
+            createdAt: 1711
+        }
+    ],
+    chat2: [
+        {
+            id: "m3",
+            senderID: "Alice",
+            text: "Did you get the file?",
+            createdAt: 1720
+        },
+        {
+            id: "m4",
+            senderID: "Calice",
+            text: "Yeah, I did, nothing to worry about Alice",
+            createdAt: 1721
+        },
+        {
+            id: "m5",
+            senderID: "Dalice",
+            text: "I too am in this conversation",
+            createdAt: 1722
+        }
+    ],
+    chat8: [
+        {
+            id: "m6",
+            senderID: "SpammingGuy",
+            text: "I am spamming this message to test the scroll function!",
+            createdAt: 1728
+        },
+        {
+            id: "m7",
+            senderID: "SpammingGuy",
+            text: "I am spamming this message to test the scroll function!",
+            createdAt: 1729
+        },
+        {
+            id: "m8",
+            senderID: "SpammingGuy",
+            text: "I am spamming this message to test the scroll function!",
+            createdAt: 1729
+        },
+        {
+            id: "m9",
+            senderID: "SpammingGuy",
+            text: "I am spamming this message to test the scroll function!",
+            createdAt: 1730
+        },
+        {
+            id: "m10",
+            senderID: "SpammingGuy",
+            text: "I am spamming this message to test the scroll function!",
+            createdAt: 1731
+        },
+        {
+            id: "m11",
+            senderID: "SpammingGuy",
+            text: "I am spamming this message to test the scroll function!",
+            createdAt: 1732
+        },
+        {
+            id: "m12",
+            senderID: "SpammingGuy",
+            text: "I am spamming this message to test the scroll function!",
+            createdAt: 1733
+        },
+        {
+            id: "m13",
+            senderID: "Alice",
+            text: "Dude, shut up.",
+            createdAt: 1734
+        },
+    ]
+};
+
+export default function ChatView({ selectedChatID, currentUser }) {
+    const chatMessages = mockMessages[selectedChatID] || [];
     const [newMessage, setNewMessage] = useState("");
 
     const handleSend = () => {
@@ -27,7 +115,7 @@ export default function ChatView({ messages, selectedChatID, currentUser }) {
             <div className="chat-view__messages">
                 {chatMessages.map(message =>
                     <div key={message.id} className={message.senderID == currentUser ? "chat-view__your-message" : "chat-view__other-message"}>
-                        <div>{message.senderID}</div>
+                        <div>{message.senderID == currentUser ? "You" : message.senderID}</div>
                         <div>{message.text}</div>
                     </div>
                     )}

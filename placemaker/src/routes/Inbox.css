@@ -9,8 +9,11 @@
 
 .inbox__chat-list{
     width: 40%;
+    overflow-y: auto;
+    max-height: 500px;
 }
 
 .inbox__chat-view{
     width: 60%;
+    max-height: 500px;
 }

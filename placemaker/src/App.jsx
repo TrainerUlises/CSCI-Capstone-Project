@@ -11,6 +11,7 @@ import {Toaster } from 'react-hot-toast' // for toast notifications
 import Home from './routes/Home'
 import { useEffect } from "react";
 import { useAuth } from "./context/AuthContext"; // AuthContext import
+import { InboxProvider } from "./context/InboxContext"; //InboxContext import
 
 import Login from './routes/Login'
 import Signup from './routes/Signup'
@@ -61,51 +62,53 @@ function App() {
     {/*<button onClick={testFirestoreWrite}>
         Test Firestore Write
       </button>*/}
-    <Navbar />
-    <Toaster position="bottom-right" />
-    <Routes>
-      <Route 
-        path="/" element={user ? <Navigate to="/feed" replace /> : <Landing />} 
-      />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
+      <InboxProvider>
+        <Navbar />
+        <Toaster position="bottom-right" />
+        <Routes>
+          <Route 
+            path="/" element={user ? <Navigate to="/feed" replace /> : <Landing />} 
+          />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
 
-      {/*<Route path="/post" element={<Post/>} />*/}
-      <Route path="/neighbors" element={<Neighbors />} />
-      <Route path="/profile-settings" element={<ProfileSettings />} />
-      <Route path="/inbox" element={<Inbox />} />
-      {/*<Route path="/feed" element={<FeedView/>} />*/}
-      <Route 
-        path="/profile" 
-        element={
-          <ProtectedRoute>
-            <Profile/>
-          </ProtectedRoute>
-        } 
-        />
-        <Route path="/profile/:id" element={
-          <ProtectedRoute>
-            <Profile/>
-          </ProtectedRoute>
-        } 
-        />
-      <Route
-        path="/feed"
-        element={
-          <ProtectedRoute>
-            <FeedView />
-          </ProtectedRoute>
-        }
-      />
-      <Route 
-        path="/explore"
-        element={
-          <ProtectedRoute>
-            <ExploreView/>
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+          {/*<Route path="/post" element={<Post/>} />*/}
+          <Route path="/neighbors" element={<Neighbors />} />
+          <Route path="/profile-settings" element={<ProfileSettings />} />
+          <Route path="/inbox" element={<Inbox />} />
+          {/*<Route path="/feed" element={<FeedView/>} />*/}
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute>
+                <Profile/>
+              </ProtectedRoute>
+            } 
+            />
+            <Route path="/profile/:id" element={
+              <ProtectedRoute>
+                <Profile/>
+              </ProtectedRoute>
+            } 
+            />
+          <Route
+            path="/feed"
+            element={
+              <ProtectedRoute>
+                <FeedView />
+              </ProtectedRoute>
+            }
+          />
+          <Route 
+            path="/explore"
+            element={
+              <ProtectedRoute>
+                <ExploreView/>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+       </InboxProvider>
     </>
   );
 }
