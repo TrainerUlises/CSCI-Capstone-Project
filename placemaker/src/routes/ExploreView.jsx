@@ -158,12 +158,12 @@ export default function FeedView() {
         <div className="feedHero">
           <div className="feedHeroTop">
           <h1>
-            Welcome back, {userData?.name || "Neighbor"}
+            Welcome back, {userData?.name || ""} {userData?.isAdmin && "🛡️"}
           </h1>
 
           <p>
             Your residency on{" "}
-            <strong>{userData?.addressLine1 || "your block"}</strong>
+            <strong>{userData?.addressLine1 || ""}</strong>
           </p>
 
           </div>
@@ -188,10 +188,6 @@ export default function FeedView() {
             </button>
           ))}
         </div>
-
-        <CreatePostBox
-          onCreatePost={handleCreatePost}
-        />
 
         <div className="feedGrid">
           {filteredPosts.map((post) => (

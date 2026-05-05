@@ -1,4 +1,8 @@
 import "./Post.css";
+import { auth, db } from "../firebase"; // new import for delete post 
+import { deleteDoc, doc, updateDoc } from "firebase/firestore"; // new import for delete post
+import { useState } from "react"; // new import for editing
+
 
 function getLabelClass(type) {
   switch (type) {
@@ -50,6 +54,46 @@ export default function Post({ post, currentUser, onToggleRemove }) {
     locationPublic?.neighborhood || "Approximate location";
   const radiusMiles = locationPublic?.radiusMiles || 0.5;
   const mapUrl = getStaticMapUrl(locationPublic);
+  const currUser = auth.currentUser; // needed for delete
+  const isOwner = currUser && post.userId === currUser.uid;  // strict comparison to ensure delete works
+
+  // new edit states
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(title);
+  const [editedBody, setEditedBody] = useState(body);
+
+  // delete func
+
+  const handleDelete = async () => 
+    {
+      const confirmDel = window.confirm(
+        "Delete this post?"
+      );
+      if(!confirmDel) return;
+
+      try {
+        await deleteDoc(doc(db, "posts", post.id));
+        console.log("Post has been deleted!");
+      } catch (error){
+        console.error("Error deleting!", error);
+      }
+    };
+    
+    // save func for editing UI posts 
+  const handleSave = async () => {
+    try {
+      await updateDoc(doc(db, "posts", post.id), {
+        title: editedTitle,
+        body: editedBody,
+      });
+
+      setIsEditing(false);
+      console.log("Post updated!");
+    } catch (error){
+      console.error("Error.", error);
+    }
+  };
+
 
   function handleToggleRemove() {
       onToggleRemove(post.id, !post.isRemoved);
@@ -63,7 +107,7 @@ export default function Post({ post, currentUser, onToggleRemove }) {
 
           <div className="postAuthorMeta">
             <div className="postAuthorLine">
-              <span className="postAuthorName">{author?.name}</span>
+              <span className="postAuthorName">{author?.name}{post.isAdmin && "🛡️"}</span>
               <span className="dot">•</span>
               <span className="postTime">{time}</span>
             </div>
@@ -80,9 +124,28 @@ export default function Post({ post, currentUser, onToggleRemove }) {
         </div>
       </header>
 
+
+      
       <div className="postBody">
+      {isEditing ? (
+        <>
+        <input
+        className="editInput"
+        value={editedTitle}
+        onChange={(e) => setEditedTitle(e.target.value)}
+        />
+        <textarea
+        className="editTextArea"
+        value={editedBody}
+        onChange={(e) => setEditedBody(e.target.value)}
+        />
+        </>
+      ) : (
+        <>
         <h3 className="postTitle">{title}</h3>
         <p className="postText">{body}</p>
+        </>
+      )}
 
         {details?.neededBy && (
           <div className="postMetaRow">
@@ -126,15 +189,57 @@ export default function Post({ post, currentUser, onToggleRemove }) {
           <button className="actionBtn" type="button">
             Share
           </button>
-          {currentUser?.isAdmin && (
-          <button
-            className="actionBtn actionDanger"
-            type="button"
-            onClick={handleToggleRemove}
-          >
-            {post.isRemoved ? "Restore" : "Remove"}
-          </button>
+
+          {isOwner && (
+          <>
+            {isEditing ? (
+              <>
+                <button
+                  className="actionBtn actionPrimary"
+                  type="button"
+                  onClick={handleSave}
+                >
+                  SAVE
+                </button>
+
+                <button
+                  className="actionBtn"
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                >
+                  CANCEL
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className="actionBtn"
+                  type="button"
+                  onClick={() => setIsEditing(true)}
+                >
+                  EDIT
+                </button>
+
+                <button
+                  className="actionBtn actionDanger"
+                  type="button"
+                  onClick={handleDelete}
+                >
+                  DELETE
+                </button>
+              </>
+            )}
+          </>
         )}
+        {currentUser?.isAdmin && (
+              <button
+                className="actionBtn actionDanger"
+                type="button"
+                onClick={handleToggleRemove}
+              >
+                {post.isRemoved ? "Restore" : "Remove"}
+              </button>
+            )}
         </div>
       </footer>
     </article>

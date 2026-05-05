@@ -8,7 +8,7 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 import { onSnapshot, query, orderBy, where } from "firebase/firestore"; // modifying import to match user zipcodes
 
-const FILTERS = ["All", "Needs Aid", "Offering Aid", "Donation/Swap", "Other", "Urgent"];
+const FILTERS = ["All", "Needs Aid", "Offering Aid", "Donation/Swap", "Other", "Urgent", "Removed"];
 
 const TYPE_CLASS = {
     "Needs Aid": "needsaid",
@@ -21,6 +21,7 @@ const TYPE_CLASS = {
 function matchesFilter(post, activeFilter) {
   if (activeFilter === "All") return true;
   if (activeFilter === "Urgent") return post.urgent === true;
+  if (activeFilter === "Removed") return post.isRemoved === true;
   return post.type === activeFilter;
 }
 
@@ -50,6 +51,7 @@ export default function FeedView() {
   
     await addDoc(collection(db, "posts"), {
       userId: firebaseUser.uid,
+      isAdmin: userData.isAdmin || false,
       type: postData.type || "Other",
       urgent: postData.urgent ?? false,
       title: postData.title,
@@ -99,6 +101,7 @@ export default function FeedView() {
         return {
           id: doc.id,
           ...data,
+          isAdmin: data.isAdmin || false,
           type: normalizedType,
           time: data.timestamp?.toDate
             ? data.timestamp.toDate().toLocaleString()
@@ -126,7 +129,7 @@ export default function FeedView() {
   
 
 
-  //will fetch real logged-in uder info
+  //will fetch real logged-in user info
   useEffect(() => {
     if (!user) return;
   
@@ -153,9 +156,17 @@ export default function FeedView() {
 
   // replacing mock_posts with real posts
   const filteredPosts = useMemo(() => {
-    return posts
-      .filter((p) => !p.isRemoved || userData?.isAdmin) // 👈 add this line
-      .filter((p) => matchesFilter(p, activeFilter));
+    return posts.filter((p) => {
+      // If "Removed" tab → only show removed (admin only)
+      if (activeFilter === "Removed") {
+        return userData?.isAdmin && p.isRemoved;
+      }
+  
+      // Otherwise → behave like normal user view (hide removed)
+      if (p.isRemoved) return false;
+  
+      return matchesFilter(p, activeFilter);
+    });
   }, [posts, activeFilter, userData]);
 
   async function onToggleRemove(postId, isRemoved) {
@@ -175,18 +186,27 @@ export default function FeedView() {
     }
   }
 
+  function handleSharebutton(post) {
+    const text = `${post.title} \n\n${post.body}`;
+    navigator.clipboard.writeText(text).then(() => {
+    toast.success("Post copied to clipboard!");
+  }).catch(() => {
+    toast.error("Post failed, try again.");
+  });
+  }
+
   return (
     <div className="feedPage">
       <div className="feedWrap">
         <div className="feedHero">
           <div className="feedHeroTop">
           <h1>
-            Welcome back, {userData?.name || "Neighbor"}
+            Welcome back, {userData?.name || ""} {userData?.isAdmin && "🛡️"}
           </h1>
 
           <p>
             Your residency on{" "}
-            <strong>{userData?.addressLine1 || "your block"}</strong>
+            <strong>{userData?.addressLine1 || ""}</strong>
           </p>
 
           </div>
@@ -200,14 +220,16 @@ export default function FeedView() {
 
         {/* Filters */}
         <div className="feedFilters">
-          {FILTERS.map((f) => (
+          {FILTERS
+            .filter((f) => f !== "Removed" || userData?.isAdmin)
+            .map((f) => (
             <button
               key={f}
               className={`filterPill ${activeFilter === f ? "active" : ""}`}
               onClick={() => setActiveFilter(f)}
               type="button"
             >
-              {f}
+              {f === "Removed" ? `🛡️ Removed (${posts.filter(p => p.isRemoved).length})` : f}
             </button>
           ))}
         </div>
