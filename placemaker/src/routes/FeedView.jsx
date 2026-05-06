@@ -52,7 +52,6 @@ export default function FeedView() {
   
     await addDoc(collection(db, "posts"), {
       userId: firebaseUser.uid,
-      isAdmin: userData.isAdmin || false,
       type: postData.type || "Other",
       urgent: postData.urgent ?? false,
       title: postData.title,
