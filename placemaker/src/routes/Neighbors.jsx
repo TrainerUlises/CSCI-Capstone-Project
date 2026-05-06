@@ -58,7 +58,8 @@ export default function Neighbors() {
                                             {user.bio}
                                     </div>
 
-                                    <button type="button" className="neighbors__button">View Profile</button>
+                                    <button type="button" className="neighbors__button" onClick={function() { navigate( `/profile/${user.id}` ); }}
+                                    >View Profile</button>
                                 </div>
                             </div>
                         );

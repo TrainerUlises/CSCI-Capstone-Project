@@ -23,6 +23,10 @@ export default function Profile() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [posts, setPosts] = useState([]); // new profile view
+    const [photoURL, setPhotoURL] = useState(null); //profile picture
+    const [isAvailable, setIsAvailable] = useState(false); // local availability toggle state
+    const [expiration, setExpiration] = useState(null); // local expiration time state
+    const [tags, setTags] = useState([]); // local tags state
 
     useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
@@ -37,6 +41,7 @@ export default function Profile() {
 
         if (userSnap.exists()) {
           setUser(userSnap.data());
+          setPhotoURL(userSnap.data().photoURL || null);
         } else {
           console.error("No user profile found!");
         }
@@ -74,6 +79,27 @@ export default function Profile() {
     return () => unsubscribe();
 }, []);
 
+const tagOptions = ["Shoveling" , "Heavy Lifting", "Gardening", "Tech Help", "Childcare", "Pet Care", "Transportation", "Language Assistance", "Elderly Assistance", "Other"];
+
+const handleAvailability = (duration) => {
+    setIsAvailable(true);
+    const expirationTime = new Date(Date.now() + duration * 60 * 60 * 1000);
+    setExpiration(expirationTime);
+};
+
+const handleAway =() => {
+    setIsAvailable(false);
+    setExpiration(null);
+    setTags([]);
+};
+
+const toggleTag = (tag) => {
+    if (tags.includes(tag)) {
+        setTags(tags.filter(t => t !== tag));
+    } else {
+        setTags([...tags, tag]);
+    }
+};
   if (loading) {
     //return <div>Loading...</div>;
   }
@@ -81,11 +107,30 @@ export default function Profile() {
     return <div>No user data available.</div>;
   }
   
-    const initials = user.name
+    const initials = user?.name
         .split(" ")
         .slice(0, 2)
         .map((w) => w[0]?.toUpperCase())
-        .join("");
+        .join("") || "";
+
+    async function ProfilePictureUpload(event) {
+        if (!auth.currentUser) return;
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const storage = getStorage();
+        const storageRef = ref(storage, `profilePictures/${auth.currentUser.uid}_${Date.now()}`
+    );
+        
+        try {
+            await uploadBytes(storageRef, file);
+            const downloadURL = await getDownloadURL(storageRef);
+            setPhotoURL(downloadURL);
+            await updateDoc(doc(db, "users", auth.currentUser.uid), { photoURL: downloadURL });
+        } catch (err) {
+            console.error("Upload failed:", err);
+        }
+    }
 
     const createdAt = user.createdAt.toDate();
     return (
@@ -96,17 +141,48 @@ export default function Profile() {
                     <section className="card profileCard">
                         <div className="profileTopRow">
                             <div className="avatar" aria-hidden="true">
-                                {initials}
+                                {photoURL ? (
+                                    <img src={photoURL} alt={`${user.name}'s profile`} 
+                                        style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
+                                        ) : (
+                                        initials    
+                                    )}
                             </div>
 
                             <div className="profileMeta">
-                                <h1 className="profileName">{user.name}</h1>
+                                <h1 className="profileName">{user.name}{user.isAdmin && "🛡️"}</h1>
+                                <div className="availabilityStatus">
+                                    {isAvailable ? (
+                                        <span className="available">Available</span>
+                                    ) : (
+                                        <span className="notAvailable">Not Available</span>
+                                    )}
+                                </div>
                                 <div className="metaLine">
                                     <span className="metaIcon" aria-hidden="true">🗓️</span>
                                     <span>Member since {createdAt.toLocaleDateString()} </span>
                                 </div>
                             </div>
                             <ProfileSettingsButton />
+                            </div>
+                            <div className= "profileActions">
+                                <div className ="availabilityControls">
+                                <button className="btn btnPrimary" onClick={() => handleAvailability(1)}>Available for 1 hour</button>
+                                <button className="btn btnPrimary" onClick={() => handleAvailability(2)}>Available for 2 hours</button>
+                                <button className="btn btnPrimary" onClick={() => handleAvailability(3)}>Available for 3 hours</button>
+                                <button className="btn btnSecondary" onClick={handleAway}>Set Away</button>
+                                </div>
+                            <div className="tagSelector">
+                                {tagOptions.map((tag) => (
+                                    <button 
+                                        key={tag} 
+                                        className={`tagButton ${tags.includes(tag) ? "selected" : ""}`} 
+                                        onClick={() => toggleTag(tag)}
+                                    >
+                                        {tag}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </section>
 

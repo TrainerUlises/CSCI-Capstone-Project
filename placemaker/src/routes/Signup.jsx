@@ -6,13 +6,13 @@ import { useNavigate, Link } from "react-router-dom";
 import { auth, db } from "../firebase.js";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
-
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import AddressAutocomplete from "../components/AddressAutocomplete";
 
 export default function Signup() {
    const navigate = useNavigate();
 
-
+    const [photoFile, setPhotoFile] = useState(null);
     const [name, setName] = useState("");
     const [address1, setAddress1] = useState("");
     const [email, setEmail] = useState("");
@@ -65,11 +65,22 @@ export default function Signup() {
 
 
             const user = userCredential.user;
-
+            let photoURL = null;
+            try{
+                 if (photoFile) {
+                    const storage = getStorage();
+                    const storageRef = ref(storage, `profilePictures/${user.uid}_${Date.now()}`);
+                    await uploadBytes(storageRef, photoFile);
+                    photoURL = await getDownloadURL(storageRef);
+            }
+        } catch (err) {
+            console.error("Error uploading profile picture during signup:", err);
+        }
 
             // Creating Firestore user document
             await setDoc(doc(db, "users", user.uid), {
                 name: name,
+                photoURL: photoURL,
                 email: user.email,
                 addressLine1: address1,
                 addressLine2: address2,
@@ -112,7 +123,24 @@ export default function Signup() {
 
                     <section className="login__card">
                         <form className="form" onSubmit={handleSignup}>
-
+                            <div className="form__group">
+                                <label htmlFor="profilePicture"></label>
+                                <input
+                                    id="profilePicture"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => setPhotoFile(e.target.files[0])}
+                                    style={{ display: "none" }}
+                                />
+                                <button
+                                    type="button"
+                                    className="form__button--extrasmall"
+                                    onClick={() => document.getElementById("profilePicture").click()}
+                                >
+                                    {photoFile ? "Change Photo" : "Upload Profile Photo"}
+                                </button>
+                                {photoFile && <span style={{ marginLeft: "8px" }}>{photoFile.name}</span>}
+                            </div>
 
                             <div className="form__row">
                                 <div className="form__group">
