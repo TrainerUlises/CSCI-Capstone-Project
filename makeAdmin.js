@@ -1,5 +1,5 @@
-import admin from "firebase-admin";
-import fs from "fs";
+const admin = require("firebase-admin");
+const fs = require("fs");
 
 // Read the JSON file manually
 const serviceAccount = JSON.parse(
