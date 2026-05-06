@@ -7,6 +7,7 @@ import { db, auth } from "../firebase";
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 import { onSnapshot, query, orderBy, where } from "firebase/firestore"; // modifying import to match user zipcodes
+import { toast } from "react-hot-toast";
 
 const FILTERS = ["All", "Needs Aid", "Offering Aid", "Donation/Swap", "Other", "Urgent", "Removed"];
 
@@ -201,12 +202,12 @@ export default function FeedView() {
         <div className="feedHero">
           <div className="feedHeroTop">
           <h1>
-            Welcome back, {userData?.name || ""} {userData?.isAdmin && "🛡️"}
+            Welcome back{userData ? `, ${userData.name || "User"}` : ""}{userData?.isAdmin && "🛡️"}!
           </h1>
 
           <p>
             Your residency on{" "}
-            <strong>{userData?.addressLine1 || ""}</strong>
+            <strong>{userData?.addressLine1 || "your block"}</strong>
           </p>
 
           </div>
