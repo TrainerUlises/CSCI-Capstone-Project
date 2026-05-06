@@ -35,7 +35,7 @@ function getStaticMapUrl(locationPublic) {
   return `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=${zoom}&size=1200x500&scale=2&maptype=roadmap&markers=color:red%7C${lat},${lng}&key=${apiKey}`;
 }
 
-export default function Post({ post }) {
+export default function Post({ post, currentUser, onToggleRemove }) {
   const {
     type,
     urgent,
@@ -45,7 +45,8 @@ export default function Post({ post }) {
     author,
     time,
     locationPublic,
-    details
+    details,
+    isRemoved
   } = post;
 
   const labelClass = getLabelClass(type);
@@ -94,15 +95,27 @@ export default function Post({ post }) {
   };
 
 
+  function handleToggleRemove() {
+      onToggleRemove(post.id, !post.isRemoved);
+  }
+
   return (
-    <article className="postCard">
+    <article className={`postCard ${isRemoved ? "postRemoved" : ""}`}>
       <header className="postHeader">
         <div className="postAuthor">
           <div className="avatar avatar-sm">{author?.initials}</div>
 
           <div className="postAuthorMeta">
             <div className="postAuthorLine">
-              <span className="postAuthorName">{author?.name}</span>
+              <span className="postAuthorName">
+                {author?.name}
+                {post.isAdmin && (
+                  <>
+                    {" "}
+                    <span role="img" aria-label="Admin badge">🛡️</span>
+                  </>
+                )}
+              </span>
               <span className="dot">•</span>
               <span className="postTime">{time}</span>
             </div>
@@ -226,6 +239,15 @@ export default function Post({ post }) {
             )}
           </>
         )}
+        {currentUser?.isAdmin && (
+              <button
+                className="actionBtn actionDanger"
+                type="button"
+                onClick={handleToggleRemove}
+              >
+                {post.isRemoved ? "Restore" : "Remove"}
+              </button>
+            )}
         </div>
       </footer>
     </article>

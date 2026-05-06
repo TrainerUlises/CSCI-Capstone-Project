@@ -150,7 +150,7 @@ const toggleTag = (tag) => {
                             </div>
 
                             <div className="profileMeta">
-                                <h1 className="profileName">{user.name}</h1>
+                                <h1 className="profileName">{user.name}{user.isAdmin && "🛡️"}</h1>
                                 <div className="availabilityStatus">
                                     {isAvailable ? (
                                         <span className="available">Available</span>

@@ -2,13 +2,14 @@ import "./FeedView.css";
 import { useMemo, useState } from "react";
 import CreatePostBox from "./CreatePostBox";
 import Post from "../components/Post";
-import { collection, addDoc, serverTimestamp, doc, getDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 import { onSnapshot, query, orderBy, where } from "firebase/firestore"; // modifying import to match user zipcodes
+import { toast } from "react-hot-toast";
 
-const FILTERS = ["All", "Needs Aid", "Offering Aid", "Donation/Swap", "Other", "Urgent"];
+const FILTERS = ["All", "Needs Aid", "Offering Aid", "Donation/Swap", "Other", "Urgent", "Removed"];
 
 const TYPE_CLASS = {
     "Needs Aid": "needsaid",
@@ -21,6 +22,7 @@ const TYPE_CLASS = {
 function matchesFilter(post, activeFilter) {
   if (activeFilter === "All") return true;
   if (activeFilter === "Urgent") return post.urgent === true;
+  if (activeFilter === "Removed") return post.isRemoved === true;
   return post.type === activeFilter;
 }
 
@@ -54,6 +56,7 @@ export default function FeedView() {
       urgent: postData.urgent ?? false,
       title: postData.title,
       body: postData.body,
+      isRemoved: false,
     
       authorName: userData.name || "Unknown User",
       zipCode: postData.locationPrivate?.zipCode || userData.zipCode || "",
@@ -98,6 +101,7 @@ export default function FeedView() {
         return {
           id: doc.id,
           ...data,
+          isAdmin: data.isAdmin || false,
           type: normalizedType,
           time: data.timestamp?.toDate
             ? data.timestamp.toDate().toLocaleString()
@@ -152,8 +156,35 @@ export default function FeedView() {
 
   // replacing mock_posts with real posts
   const filteredPosts = useMemo(() => {
-    return posts.filter((p) => matchesFilter(p, activeFilter));
-  }, [posts, activeFilter]);
+    return posts.filter((p) => {
+      // If "Removed" tab → only show removed (admin only)
+      if (activeFilter === "Removed") {
+        return userData?.isAdmin && p.isRemoved;
+      }
+  
+      // Otherwise → behave like normal user view (hide removed)
+      if (p.isRemoved) return false;
+  
+      return matchesFilter(p, activeFilter);
+    });
+  }, [posts, activeFilter, userData]);
+
+  async function onToggleRemove(postId, isRemoved) {
+    try {
+      const ref = doc(db, "posts", postId);
+  
+      await updateDoc(ref, { isRemoved });
+  
+      // update UI immediately
+      setPosts((prev) =>
+        prev.map((p) =>
+          p.id === postId ? { ...p, isRemoved } : p
+        )
+      );
+    } catch (err) {
+      console.error("Error updating post:", err);
+    }
+  }
 
   function handleSharebutton(post) {
     const text = `${post.title} \n\n${post.body}`;
@@ -170,7 +201,7 @@ export default function FeedView() {
         <div className="feedHero">
           <div className="feedHeroTop">
           <h1>
-            Welcome back, {userData?.name || "Neighbor"}
+            Welcome back{userData ? `, ${userData.name || "User"}` : ""}{userData?.isAdmin && "🛡️"}!
           </h1>
 
           <p>
@@ -189,14 +220,16 @@ export default function FeedView() {
 
         {/* Filters */}
         <div className="feedFilters">
-          {FILTERS.map((f) => (
+          {FILTERS
+            .filter((f) => f !== "Removed" || userData?.isAdmin)
+            .map((f) => (
             <button
               key={f}
               className={`filterPill ${activeFilter === f ? "active" : ""}`}
               onClick={() => setActiveFilter(f)}
               type="button"
             >
-              {f}
+              {f === "Removed" ? `🛡️ Removed (${posts.filter(p => p.isRemoved).length})` : f}
             </button>
           ))}
         </div>
@@ -207,7 +240,11 @@ export default function FeedView() {
 
         <div className="feedGrid">
           {filteredPosts.map((post) => (
-            <Post key={post.id} post={post} />
+            <Post 
+              key={post.id} 
+              post={post} 
+              currentUser={userData}
+              onToggleRemove={onToggleRemove} />
           ))}
         </div>
       </div>
