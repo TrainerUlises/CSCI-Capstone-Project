@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "@googlemaps/js-api-loader": "^2.0.2",
-    "firebase-admin": "^13.8.0"
+    "@googlemaps/js-api-loader": "^2.0.2"
   }
 }
