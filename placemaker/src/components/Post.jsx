@@ -107,7 +107,15 @@ export default function Post({ post, currentUser, onToggleRemove }) {
 
           <div className="postAuthorMeta">
             <div className="postAuthorLine">
-              <span className="postAuthorName">{author?.name}{post.isAdmin && "🛡️"}</span>
+              <span className="postAuthorName">
+                {author?.name}
+                {post.isAdmin && (
+                  <>
+                    {" "}
+                    <span role="img" aria-label="Admin badge">🛡️</span>
+                  </>
+                )}
+              </span>
               <span className="dot">•</span>
               <span className="postTime">{time}</span>
             </div>
