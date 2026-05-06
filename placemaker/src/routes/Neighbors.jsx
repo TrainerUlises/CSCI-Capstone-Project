@@ -10,7 +10,7 @@ export default function Neighbors() {
         { id: 3, name: "Emily Hawkins", address: "4252 Jefferson Boulevard", bio: "University student majoring in Economics, I want to help wherever I can." },
         { id: 4, name: "Bill Jameson", address: "6524 Kensington Lane", bio: "Architect and urban planning nerd, would love to discuss city design." },
         { id: 5, name: "Petra Chambers", address: "2232 21st Street", bio: "Personal chef and hobby artist, if you ever need any pointers on cooking or painting, you know where to go!"}
-    ];
+    ]
 
     //Search bar functionality
     const [search, setSearch] = useState("");
