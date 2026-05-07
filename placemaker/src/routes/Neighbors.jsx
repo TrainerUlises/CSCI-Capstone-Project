@@ -1,27 +1,62 @@
 ﻿import './Neighbors.css'
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
+import { db, auth } from "../firebase"; // adjust path
+import { collection, query, where, doc, getDoc, getDocs } from "firebase/firestore";
 
 export default function Neighbors() {
-
-    //Swap with firestore data later
-    const mockUsers = [
-        { id: 1, name: "Alex Rivera", address: "123 3rd Avenue", bio: "Professional botanist that's always down to chat!" },
-        { id: 2, name: "John Smith", address: "1724 Baker Street", bio: "I'm a local musician who loves playing down at the park fountain, come by sometime." },
-        { id: 3, name: "Emily Hawkins", address: "4252 Jefferson Boulevard", bio: "University student majoring in Economics, I want to help wherever I can." },
-        { id: 4, name: "Bill Jameson", address: "6524 Kensington Lane", bio: "Architect and urban planning nerd, would love to discuss city design." },
-        { id: 5, name: "Petra Chambers", address: "2232 21st Street", bio: "Personal chef and hobby artist, if you ever need any pointers on cooking or painting, you know where to go!"}
-    ]
-
-    //Search bar functionality
+    const [users, setUsers] = useState([]);
     const [search, setSearch] = useState("");
-    const filteredUsers = mockUsers.filter(user => user.name.toLowerCase().includes(search.toLowerCase())
-        || user.address.toLowerCase().includes(search.toLowerCase()));
+
+    useEffect(() => {
+        const fetchNeighbors = async () => {
+            try {
+                const currentUser = auth.currentUser;
+
+                if (!currentUser) return;
+
+                // assume zipCode is stored on user doc OR auth custom claim
+                const userDocRef = doc(db, "users", currentUser.uid);
+                const userSnap = await getDoc(userDocRef);
+
+                if (!userSnap.exists()) return;
+
+                const currentZip = userSnap.data().zipCode;
+                //if (!currentZip) return;
+
+                // get users with same zipCode
+                const q = query(
+                    collection(db, "users"),
+                    where("zipCode", "==", currentZip)
+                );
+
+                const snapshot = await getDocs(q);
+
+                const usersList = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                console.log("Neighbors:", usersList);
+
+                setUsers(usersList);
+
+            } catch (err) {
+                console.error("Error fetching neighbors:", err);
+            }
+        };
+
+        fetchNeighbors();
+    }, []);
+
+    
+    const filteredUsers = users.filter(user => 
+        user.name.toLowerCase().includes(search.toLowerCase()));
 
     return (<>
         <main className="neighbors">
             <div className="neighbors__container">
                 <h1 className="neighbors__list-header">Your Neighbors</h1>
-                <h2 className="neighbors__list-subheader">{mockUsers.length} neighbors near you</h2>
+                <h2 className="neighbors__list-subheader">{users.length} neighbors near you</h2>
                 <div className="neighbors__search-bar-container">
                     🔍
                     <input
@@ -40,8 +75,7 @@ export default function Neighbors() {
                             .join("");
 
                         return (
-                            //This basically just the ProfileView card with its respective css imported and streamlined a bit into the neighbors css file,
-                            // once we get all the firestore stuff working might go back and turn the top profile card from there into an exportable component instead
+                            //This basically just the ProfileView card with its respective css imported and streamlined a bit into the neighbors css file
                             <div className="neighbors__card" key={user.id}>
                                 <div className="avatar">
                                     {initials}
@@ -51,7 +85,7 @@ export default function Neighbors() {
                                     <h2 className="neighbors__name">{user.name}</h2>
 
                                     <div className="neighbors__info-line">
-                                        📍{user.address}
+                                        📧 {user.email}
                                     </div>
 
                                     <div className="neighbors__info-line">
