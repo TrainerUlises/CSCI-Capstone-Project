@@ -1,12 +1,14 @@
 ﻿import './Neighbors.css'
 import { React, useState, useEffect } from "react";
 import { db, auth } from "../firebase"; // adjust path
-import { collection, query, where, doc, getDoc, getDocs } from "firebase/firestore";
+import { collection, query, where, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import { signOut } from "firebase/auth";
 
 export default function Neighbors() {
     const [users, setUsers] = useState([]);
     const [search, setSearch] = useState("");
     const [zipCode, setZipCode] = useState("");
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         const fetchNeighbors = async () => {
@@ -19,10 +21,13 @@ export default function Neighbors() {
                 // assume zipCode is stored on user doc OR auth custom claim
                 const userDocRef = doc(db, "users", currentUser.uid);
                 const userSnap = await getDoc(userDocRef);
+                const userData = userSnap.data();
+                const currentZip = userData.zipCode;
+                setIsAdmin(userData.isAdmin === true);
 
                 if (!userSnap.exists()) return;
 
-                const currentZip = userSnap.data().zipCode;
+                //const currentZip = userSnap.data().zipCode;
                 //if (!currentZip) return;
 
                 // get users with same zipCode
@@ -54,6 +59,28 @@ export default function Neighbors() {
     
     const filteredUsers = users.filter(user => 
         user.name.toLowerCase().includes(search.toLowerCase()));
+
+    const toggleBanStatus = async (userId, currentStatus) => {
+        try {
+            const userRef = doc(db, "users", userId);
+    
+            await updateDoc(userRef, {
+                isBanned: !currentStatus
+            });
+    
+            // update UI immediately
+            setUsers(prev =>
+                prev.map(user =>
+                    user.id === userId
+                        ? { ...user, isBanned: !currentStatus }
+                        : user
+                )
+            );
+    
+        } catch (err) {
+            console.error("Error updating ban status:", err);
+        }
+    };
 
     return (<>
         <main className="neighbors">
@@ -106,6 +133,14 @@ export default function Neighbors() {
                                     <div className="neighbors__info-line">
                                             {user.bio}
                                     </div>
+                                {isAdmin && (
+                                    <button
+                                        className="neighbors__restrict-button"
+                                        onClick={() => toggleBanStatus(user.id, user.isBanned)}
+                                    >
+                                        {user.isBanned ? "Unrestrict User" : "Restrict User"}
+                                    </button>
+                                )}
                                 </div>
                             </div>
                         );

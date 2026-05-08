@@ -140,3 +140,19 @@
     opacity: 0.9;
     transform: translateY(-1px);
 }
+
+.neighbors__restrict-button {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    background-color: #d9534f;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.neighbors__restrict-button:hover {
+    opacity: 0.9;
+}
