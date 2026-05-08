@@ -116,3 +116,27 @@
     width: 100%;
     justify-self: center;
 }
+
+.neighbors__forum-button {
+    margin-top: 12px;
+    margin-bottom: 20px;
+
+    padding: 12px 18px;
+
+    border: none;
+    border-radius: 12px;
+
+    background-color: #8b4513;
+    color: white;
+
+    font-size: 1rem;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.neighbors__forum-button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}

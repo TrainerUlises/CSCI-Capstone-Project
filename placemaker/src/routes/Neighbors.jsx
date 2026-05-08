@@ -6,11 +6,13 @@ import { collection, query, where, doc, getDoc, getDocs } from "firebase/firesto
 export default function Neighbors() {
     const [users, setUsers] = useState([]);
     const [search, setSearch] = useState("");
+    const [zipCode, setZipCode] = useState("");
 
     useEffect(() => {
         const fetchNeighbors = async () => {
             try {
                 const currentUser = auth.currentUser;
+                
 
                 if (!currentUser) return;
 
@@ -39,6 +41,7 @@ export default function Neighbors() {
                 console.log("Neighbors:", usersList);
 
                 setUsers(usersList);
+                setZipCode(currentZip);
 
             } catch (err) {
                 console.error("Error fetching neighbors:", err);
@@ -55,14 +58,26 @@ export default function Neighbors() {
     return (<>
         <main className="neighbors">
             <div className="neighbors__container">
-                <h1 className="neighbors__list-header">Your Neighbors</h1>
-                <h2 className="neighbors__list-subheader">{users.length} neighbors near you</h2>
+            <h1 className="neighbors__list-header">Your Neighbors in 📍{zipCode}</h1>
+                <h2 className="neighbors__list-subheader">
+                    {users.length} neighbors near you
+                </h2>
+
+                <button
+                    type="button"
+                    className="neighbors__forum-button"
+                    onClick={() => {
+                        console.log("Go to Community Forum");
+                    }}
+                >
+                    Go to Community Forum
+                </button>
                 <div className="neighbors__search-bar-container">
                     🔍
                     <input
                         className="neighbors__search-bar"
                         type="text"
-                        placeholder="Search by name or address"
+                        placeholder="Search by name"
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
@@ -91,9 +106,6 @@ export default function Neighbors() {
                                     <div className="neighbors__info-line">
                                             {user.bio}
                                     </div>
-
-                                    <button type="button" className="neighbors__button" onClick={function() { navigate( `/profile/${user.id}` ); }}
-                                    >View Profile</button>
                                 </div>
                             </div>
                         );
