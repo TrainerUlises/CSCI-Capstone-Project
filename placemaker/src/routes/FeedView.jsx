@@ -233,7 +233,26 @@ export default function FeedView() {
 
   
 
+  //test
 
+  async function onToggleRemove(postId, isRemoved) {
+    try {
+      const postRef = doc(db, "posts", postId);
+  
+      await updateDoc(postRef, {
+        isRemoved: isRemoved,
+      });
+  
+      setPosts((prevPosts) =>
+        prevPosts.map((p) =>
+          p.id === postId ? { ...p, isRemoved } : p
+        )
+      );
+  
+    } catch (error) {
+      console.error("Error toggling removal:", error);
+    }
+  }
 
 
   function handleSharebutton(post) {
@@ -244,6 +263,8 @@ export default function FeedView() {
     toast.error("Post failed, try again.");
   });
   }
+
+  
 
   return (
     <div className="feedPage">
