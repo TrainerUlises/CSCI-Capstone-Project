@@ -74,7 +74,26 @@ export default function FeedView() {
   const [posts, setPosts] = useState([]); // real posts
   const { user } = useAuth(); // real time render
   const [userData, setUserData] = useState(null);
+  const [userLocation, setUserLocation] = useState(null); // used for radius filtering
+  const [selectedRadius, setSelectedRadius] = useState(10); // used for radius fil, default to 5 miles, changed to 10 for testing purposes 
   const urgentCount = posts.filter(p => p.urgent).length;
+
+  // geolocation function
+  useEffect(() => {
+    if(!navigator.geolocation) return; // base case
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        });
+      },
+      (error) => {
+        console.error("ERROR WITH GEOLOCATION!", error);
+      }
+    );
+  }, []);
 
   //adding real time firestore listener
   // functionality
@@ -83,14 +102,20 @@ export default function FeedView() {
   // converts firestore time
   // updates in real time
 
-  useEffect(() => {
+  //useEffect(() => {
     // Waiting until userData displays and has a valid zipCode
-    if (!userData?.zipCode) return;
+    //if (!userData?.zipCode) return;
   
+    //const q = query(
+      //collection(db, "posts"),
+      //where("zipCode", "==", userData.zipCode), // Filter by user's zip
+      //orderBy("timestamp", "desc") // Sort newest first
+    //);
+
+   useEffect(() => {
     const q = query(
       collection(db, "posts"),
-      where("zipCode", "==", userData.zipCode), // Filter by user's zip
-      orderBy("timestamp", "desc") // Sort newest first
+      orderBy("timestamp", "desc")
     );
   
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -125,7 +150,7 @@ export default function FeedView() {
     });
   
     return () => unsubscribe();
-  }, [userData]);
+  }, []);
   
 
 
@@ -148,6 +173,24 @@ export default function FeedView() {
   
     fetchUser();
   }, [user]);
+
+  // distance function, will calculate distance between user coordinates and posts coordinates, will return results in miles
+  function calcDistanceMiles(lat1, lng1, lat2, lng2)
+  {
+    const toRad = (value) => (value * Math.PI) / 180;
+
+    const R = 3958.8 // earth radi in miles
+
+    const dLat = toRad(lat2 - lat1);
+    const dLng = toRad(lng2 - lng1);
+
+    const formula
+    = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng/2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(formula), Math.sqrt(1-formula));
+
+    return R * c;
+  }
+
   
 
   /*const filteredPosts = useMemo(() => {
@@ -155,36 +198,62 @@ export default function FeedView() {
   }, [activeFilter]);*/ //updating this!
 
   // replacing mock_posts with real posts
+  //const filteredPosts = useMemo(() => {
+    //return posts.filter((p) => matchesFilter(p, activeFilter));
+  //}, [posts, activeFilter]);
+
+  // replacing prev filteredPosts with new func
   const filteredPosts = useMemo(() => {
-    return posts.filter((p) => {
-      // If "Removed" tab → only show removed (admin only)
-      if (activeFilter === "Removed") {
-        return userData?.isAdmin && p.isRemoved;
-      }
-  
-      // Otherwise → behave like normal user view (hide removed)
-      if (p.isRemoved) return false;
-  
-      return matchesFilter(p, activeFilter);
+
+    return posts.filter((post) => {
+      //applying existing filter
+      if(!matchesFilter(post, activeFilter)) return false;
+
+      // if user loca not available yet, we do not filter by distance
+      if(!userLocation) return true;
+
+      // if post has no coordinates, do nothing
+      if(!post.locationPublic?.lat || !post.locationPublic?.lng) return false;
+
+      //calculating distance
+      const distance = calcDistanceMiles(
+        userLocation.lat,
+        userLocation.lng,
+        post.locationPublic.lat,
+        post.locationPublic.lng
+      );
+
+      //test 
+      console.log("Post:", post.title, "Distance:", distance);
+
+      // including if its within the radius region
+      return distance <= selectedRadius;
     });
-  }, [posts, activeFilter, userData]);
+  }, [posts, activeFilter, userLocation, selectedRadius]);
+
+  
+
+  //test
 
   async function onToggleRemove(postId, isRemoved) {
     try {
-      const ref = doc(db, "posts", postId);
+      const postRef = doc(db, "posts", postId);
   
-      await updateDoc(ref, { isRemoved });
+      await updateDoc(postRef, {
+        isRemoved: isRemoved,
+      });
   
-      // update UI immediately
-      setPosts((prev) =>
-        prev.map((p) =>
+      setPosts((prevPosts) =>
+        prevPosts.map((p) =>
           p.id === postId ? { ...p, isRemoved } : p
         )
       );
-    } catch (err) {
-      console.error("Error updating post:", err);
+  
+    } catch (error) {
+      console.error("Error toggling removal:", error);
     }
   }
+
 
   function handleSharebutton(post) {
     const text = `${post.title} \n\n${post.body}`;
@@ -194,6 +263,8 @@ export default function FeedView() {
     toast.error("Post failed, try again.");
   });
   }
+
+  
 
   return (
     <div className="feedPage">
@@ -237,6 +308,22 @@ export default function FeedView() {
         <CreatePostBox
           onCreatePost={handleCreatePost}
         />
+
+        {/* Radius Selector */}
+        <div className="radiusControl">
+          <span className="radiusLabel">Displaying Posts Within </span>
+          <select
+          className="radiusSelect"
+          value={selectedRadius}
+          onChange={(e) => setSelectedRadius(Number(e.target.value))} 
+          >
+            <option value={5}>5 Miles</option>
+            <option value={10}>10 Miles</option>
+            <option value={15}>15 Miles</option>
+            <option value={25}>25 Miles</option>
+            <option value={35}>35 Miles</option>
+          </select>
+        </div>
 
         <div className="feedGrid">
           {filteredPosts.map((post) => (

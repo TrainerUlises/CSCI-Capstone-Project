@@ -1,4 +1,4 @@
-.chat-view__container {
+.forum-view__container {
     background: #ffffff;
     border: 1px solid rgba(38, 18, 12, 0.08);
     border-radius: 14px;
@@ -10,44 +10,38 @@
     gap: 8px;
 }
 
-.chat-view__messages{
+.forum-view__post-list{
     display: flex;
     flex-direction: column;
     flex: 1;
     overflow-y: auto;
 }
 
-.chat-view__your-message {
-    max-width: 65%;
-    padding: 10px 14px;
-    border-radius: 12px;
-    word-wrap: break-word;
-    align-self: flex-end;
-    background-color: #D97639;
-    color: white;
-    border-bottom-right-radius: 0px;
-    margin-bottom: 15px;
+.forum-view__desc{
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
 }
 
-.chat-view__other-message {
-    max-width: 65%;
+.forum-view__post {
+    width: 100%;
     padding: 10px 14px;
     border-radius: 12px;
     word-wrap: break-word;
-    align-self: flex-start;
-    background-color: #DEDEDE;
+    background-color: white;
     color: black;
-    border-bottom-left-radius: 0px;
     margin-bottom: 15px;
+    border-width: 5px;
+    border-color: #D97639;
 }
 
-.chat-view__input-row {
+.forum-view__input-row {
     display: flex;
     gap: 8px;
     margin-top: 8px;
 }
 
-.chat-view__input-field {
+.forum-view__input-field {
   width: 100%;
   height: 44px;
   border: 1px solid #d1d5db;
@@ -58,12 +52,12 @@
   outline: none;
 }
 
-.chat-view__input-field:focus {
+.forum-view__input-field:focus {
   border-color: #D97639;
   box-shadow: 0 0 0 3px rgba(217, 118, 57, 0.15);
 }
 
-.chat-view__input-button {
+.forum-view__input-button {
     background-color: #D97639;
     color: white;
     border: none;
