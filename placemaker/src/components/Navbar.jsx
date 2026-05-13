@@ -67,10 +67,10 @@ export default function Navbar() {
             </Link>
 
             <Link
-              to="/inbox"
-              className={`navbar__pill-item ${isActive("/inbox") ? "active" : ""}`}
+              to="/forums"
+              className={`navbar__pill-item ${isActive("/forums") ? "active" : ""}`}
             >
-              Inbox
+              Forums
             </Link>
 
             {/* Added a sign out Button */}

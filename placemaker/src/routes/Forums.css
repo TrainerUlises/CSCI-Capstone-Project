@@ -1,4 +1,4 @@
-.inbox {
+.forums {
     width: 100%;
     min-height: calc(100vh - 72px);
     background: #fbf4ee;
@@ -7,10 +7,13 @@
     justify-content: center;
 }
 
-.inbox__chat-list{
+.forums__forum-list{
     width: 40%;
+    overflow-y: auto;
+    max-height: 500px;
 }
 
-.inbox__chat-view{
+.forums__forum-view{
     width: 60%;
+    max-height: 500px;
 }

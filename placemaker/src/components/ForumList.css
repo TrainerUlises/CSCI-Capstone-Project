@@ -1,0 +1,46 @@
+.forum-list__item {
+    background: #ffffff;
+    border: 1px solid rgba(38, 18, 12, 0.08);
+    border-radius: 14px;
+    width: 98%;
+    box-shadow: 0 10px 28px rgba(38, 18, 12, 0.06);
+    padding: 22px 22px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: start;
+}
+
+.forum-list__title {
+    font-size: 18px;
+    color: #24130d;
+}
+
+.forum-list__post-row {
+    display: flex;
+}
+
+.forum-list__last-post {
+    font-size: 14px;
+    margin-left: 15px;
+    color: #24130d;
+    opacity: 0.8;
+}
+
+.forum-list__notif-badge {
+    background-color: #D97639;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    width: 25px;
+    height: 25px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    margin-left: 10px;
+}
+
+--read {
+    visibility: hidden;
+}

@@ -1,6 +1,5 @@
 import "./FeedView.css";
 import { useMemo, useState } from "react";
-import CreatePostBox from "./CreatePostBox";
 import Post from "../components/Post";
 import { collection, addDoc, serverTimestamp, doc, getDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
@@ -30,43 +29,7 @@ function normalizePostType(type) {
   return type || "Other";
 }
 
-export default function FeedView() {
-  async function handleCreatePost(postData) {
-    const firebaseUser = auth.currentUser;
-  
-    if (!firebaseUser) {
-      throw new Error("No logged-in user found.");
-    }
-  
-    // get the user document using UID
-    const userRef = doc(db, "users", firebaseUser.uid);
-    const userSnap = await getDoc(userRef);
-  
-    if (!userSnap.exists()) {
-      throw new Error("User profile not found.");
-    }
-  
-    const userData = userSnap.data();
-  
-    await addDoc(collection(db, "posts"), {
-      userId: firebaseUser.uid,
-      type: postData.type || "Other",
-      urgent: postData.urgent ?? false,
-      title: postData.title,
-      body: postData.body,
-    
-      authorName: userData.name || "Unknown User",
-      zipCode: postData.locationPrivate?.zipCode || userData.zipCode || "",
-    
-      timestamp: serverTimestamp(),
-      neededBy: postData.neededBy || "",
-      imageUrl: postData.imageUrl || "",
-    
-      locationPublic: postData.locationPublic || null,
-      locationPrivate: postData.locationPrivate || null,
-    });
-  }
-
+export default function ExploreView() {
   const [activeFilter, setActiveFilter] = useState("All");
   const [posts, setPosts] = useState([]); // real posts
   const { user } = useAuth(); // real time render
@@ -158,7 +121,7 @@ export default function FeedView() {
         <div className="feedHero">
           <div className="feedHeroTop">
           <h1>
-            Welcome back, {userData?.name || "Neighbor"}
+            Welcome back{userData ? `, ${userData.name || "User"}` : ""}{userData?.isAdmin && "🛡️"}!
           </h1>
 
           <p>
@@ -188,10 +151,6 @@ export default function FeedView() {
             </button>
           ))}
         </div>
-
-        <CreatePostBox
-          onCreatePost={handleCreatePost}
-        />
 
         <div className="feedGrid">
           {filteredPosts.map((post) => (

@@ -2,13 +2,14 @@ import "./FeedView.css";
 import { useMemo, useState } from "react";
 import CreatePostBox from "./CreatePostBox";
 import Post from "../components/Post";
-import { collection, addDoc, serverTimestamp, doc, getDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 import { onSnapshot, query, orderBy, where } from "firebase/firestore"; // modifying import to match user zipcodes
+import { toast } from "react-hot-toast";
 
-const FILTERS = ["All", "Needs Aid", "Offering Aid", "Donation/Swap", "Other", "Urgent"];
+const FILTERS = ["All", "Needs Aid", "Offering Aid", "Donation/Swap", "Other", "Urgent", "Removed"];
 
 const TYPE_CLASS = {
     "Needs Aid": "needsaid",
@@ -21,6 +22,7 @@ const TYPE_CLASS = {
 function matchesFilter(post, activeFilter) {
   if (activeFilter === "All") return true;
   if (activeFilter === "Urgent") return post.urgent === true;
+  if (activeFilter === "Removed") return post.isRemoved === true;
   return post.type === activeFilter;
 }
 
@@ -54,6 +56,7 @@ export default function FeedView() {
       urgent: postData.urgent ?? false,
       title: postData.title,
       body: postData.body,
+      isRemoved: false,
     
       authorName: userData.name || "Unknown User",
       zipCode: postData.locationPrivate?.zipCode || userData.zipCode || "",
@@ -123,6 +126,7 @@ export default function FeedView() {
         return {
           id: doc.id,
           ...data,
+          isAdmin: data.isAdmin || false,
           type: normalizedType,
           time: data.timestamp?.toDate
             ? data.timestamp.toDate().toLocaleString()
@@ -247,7 +251,7 @@ export default function FeedView() {
         <div className="feedHero">
           <div className="feedHeroTop">
           <h1>
-            Welcome back, {userData?.name || "Neighbor"}
+            Welcome back{userData ? `, ${userData.name || "User"}` : ""}{userData?.isAdmin && "🛡️"}!
           </h1>
 
           <p>
@@ -266,14 +270,16 @@ export default function FeedView() {
 
         {/* Filters */}
         <div className="feedFilters">
-          {FILTERS.map((f) => (
+          {FILTERS
+            .filter((f) => f !== "Removed" || userData?.isAdmin)
+            .map((f) => (
             <button
               key={f}
               className={`filterPill ${activeFilter === f ? "active" : ""}`}
               onClick={() => setActiveFilter(f)}
               type="button"
             >
-              {f}
+              {f === "Removed" ? `🛡️ Removed (${posts.filter(p => p.isRemoved).length})` : f}
             </button>
           ))}
         </div>
@@ -300,7 +306,11 @@ export default function FeedView() {
 
         <div className="feedGrid">
           {filteredPosts.map((post) => (
-            <Post key={post.id} post={post} />
+            <Post 
+              key={post.id} 
+              post={post} 
+              currentUser={userData}
+              onToggleRemove={onToggleRemove} />
           ))}
         </div>
       </div>
