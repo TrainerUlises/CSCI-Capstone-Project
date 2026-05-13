@@ -552,3 +552,39 @@
     gap: 16px;
     grid-template-columns: repeat(auto-fit, 389px);
   }
+
+/* new styling for radi filtering */
+
+.radiusControl {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0 1.5rem 0;
+  font-size: 0.95rem;
+  color: #5a4a42;
+}
+
+.radiusLabel {
+  font-weight: 500;
+}
+
+.radiusSelect {
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid #e0d6cf;
+  background-color: #fffaf6;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.radiusSelect:hover {
+  border-color: #d8b4a0;
+}
+
+.radiusSelect:focus {
+  outline: none;
+  border-color: #c77f5a;
+  box-shadow: 0 0 0 2px rgba(199, 127, 90, 0.2);
+}
+
