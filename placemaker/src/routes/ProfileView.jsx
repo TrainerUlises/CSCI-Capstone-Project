@@ -247,7 +247,7 @@ const toggleTag = (tag) => {
                     {/* This section will display profile info, about section, and a small section that displays your personal posts */}
                     <section className="card sectionCard">
                     <div className="sectionHeader">
-                        <h2 className="sectionTitle">My Personal Posts</h2>
+                        <h2 className="sectionTitle">📝 My Personal Posts</h2>
                     </div>
 
                     {posts.length === 0 ? (

@@ -2,13 +2,14 @@
 import { React, useState, useEffect } from "react";
 import { db, auth } from "../firebase"; // adjust path
 import { collection, query, where, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
-import { signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function Neighbors() {
     const [users, setUsers] = useState([]);
     const [search, setSearch] = useState("");
     const [zipCode, setZipCode] = useState("");
     const [isAdmin, setIsAdmin] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchNeighbors = async () => {
@@ -38,12 +39,12 @@ export default function Neighbors() {
 
                 const snapshot = await getDocs(q);
 
-                const usersList = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-
-                console.log("Neighbors:", usersList);
+                const usersList = snapshot.docs
+                    .map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }))
+                    .filter(user => user.id !== currentUser.uid);
 
                 setUsers(usersList);
                 setZipCode(currentZip);
@@ -58,7 +59,7 @@ export default function Neighbors() {
 
     
     const filteredUsers = users.filter(user => 
-        user.name.toLowerCase().includes(search.toLowerCase()));
+        (user.name || "").toLowerCase().includes(search.toLowerCase()));
 
     const toggleBanStatus = async (userId, currentStatus) => {
         try {
@@ -94,10 +95,10 @@ export default function Neighbors() {
                     type="button"
                     className="neighbors__forum-button"
                     onClick={() => {
-                        console.log("Go to Community Forum");
+                        navigate("/forums");
                     }}
                 >
-                    Go to Community Forum
+                    Go to Community Forums
                 </button>
                 <div className="neighbors__search-bar-container">
                     🔍

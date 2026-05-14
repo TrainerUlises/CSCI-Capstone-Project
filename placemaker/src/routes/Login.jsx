@@ -49,7 +49,7 @@ export default function Login() {
 
         } catch (err) {
             console.error(" LOGIN FAILED:", err.message);
-            setError("Invalid email or password.");
+            setError(err.message);
         }
     }
 
