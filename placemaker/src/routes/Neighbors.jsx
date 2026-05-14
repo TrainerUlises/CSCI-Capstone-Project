@@ -26,6 +26,14 @@ export default function Neighbors() {
                 if (!userSnap.exists()) return;
 
                 const userData = userSnap.data();
+
+                if (userData.isBanned) {
+                    alert("Your account has been restricted.");
+                    await auth.signOut();
+                    navigate("/login");
+                    return;
+                }
+                
                 const currentZip = userData.zipCode;
                 setIsAdmin(userData.isAdmin === true);
 
