@@ -22,11 +22,12 @@ export default function Neighbors() {
                 // assume zipCode is stored on user doc OR auth custom claim
                 const userDocRef = doc(db, "users", currentUser.uid);
                 const userSnap = await getDoc(userDocRef);
+
+                if (!userSnap.exists()) return;
+
                 const userData = userSnap.data();
                 const currentZip = userData.zipCode;
                 setIsAdmin(userData.isAdmin === true);
-
-                if (!userSnap.exists()) return;
 
                 //const currentZip = userSnap.data().zipCode;
                 //if (!currentZip) return;
