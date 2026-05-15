@@ -120,12 +120,13 @@ export default function Neighbors() {
                 </div>
                 <div className="neighbors__map-container">
                     {filteredUsers.map((user) => {
-                        const initials = user.name
+                        const initials = user?.name
+                        ? user.name
                             .split(" ")
                             .slice(0, 2)
                             .map((w) => w[0]?.toUpperCase())
-                            .join("");
-
+                            .join("")
+                        : "";
                         return (
                             //This basically just the ProfileView card with its respective css imported and streamlined a bit into the neighbors css file
                             <div className="neighbors__card" key={user.id}>
