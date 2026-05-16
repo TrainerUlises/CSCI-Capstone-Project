@@ -161,7 +161,7 @@ function CreatePostBox({ currentUser, onCreatePost }) {
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder="Add helpful details (who, what, when, where)..."
-          rows={4}
+          rows={2}
           maxLength={600}
         />
         <div className="createMeta">{body.length}/600</div>

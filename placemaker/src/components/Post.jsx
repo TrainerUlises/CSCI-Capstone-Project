@@ -1,6 +1,6 @@
 import "./Post.css";
 import { auth, db } from "../firebase"; // new import for delete post 
-import { deleteDoc, doc, updateDoc } from "firebase/firestore"; // new import for delete post
+import { deleteDoc, doc, updateDoc, arrayUnion } from "firebase/firestore"; // new import for delete post
 import { useState } from "react"; // new import for editing
 
 
@@ -62,6 +62,12 @@ export default function Post({ post, currentUser, onToggleRemove }) {
   const [editedTitle, setEditedTitle] = useState(title);
   const [editedBody, setEditedBody] = useState(body);
 
+  //report post
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState("");
+  const [reportSubmitted, setReportSubmitted] = useState(false);
+  const alreadyReported = currUser && post.reports?.includes(currUser.uid);
+
   // delete func
 
   const handleDelete = async () => 
@@ -98,6 +104,19 @@ export default function Post({ post, currentUser, onToggleRemove }) {
   function handleToggleRemove() {
       onToggleRemove(post.id, !post.isRemoved);
   }
+  const handleReport = async () => {
+    if (!reportReason) return;
+    try {
+      await updateDoc(doc(db, "posts", post.id), {
+        reports: arrayUnion(currUser.uid),
+        isRemoved: true,
+     });
+    setReportSubmitted(true);
+    setShowReportModal(false);
+    } catch (error) {
+      console.error("Error reporting post.", error);
+    }
+  };
 
   return (
     <article className={`postCard ${isRemoved ? "postRemoved" : ""}`}>
@@ -132,7 +151,7 @@ export default function Post({ post, currentUser, onToggleRemove }) {
         </div>
       </header>
 
-
+                
       
       <div className="postBody">
       {isEditing ? (
@@ -248,8 +267,50 @@ export default function Post({ post, currentUser, onToggleRemove }) {
                 {post.isRemoved ? "Restore" : "Remove"}
               </button>
             )}
+        {!isOwner && !alreadyReported && !reportSubmitted && (
+          <button className="actionBtn actionReport" type="button" onClick={() => setShowReportModal(true)}>
+            🚩 Report
+          </button>
+          )}
+
+        {(alreadyReported || reportSubmitted) && (
+          <span className="reportedLabel">Reported</span>
+          )}
         </div>
       </footer>
-    </article>
+        {showReportModal && (
+          <div className="modalOverlay" onClick={() => setShowReportModal(false)}>
+          <div className="modalCard" onClick={(e) => e.stopPropagation()}>
+          <h3 className="modalTitle">Report Post</h3>
+            <p className="modalSubtitle">Why are you reporting this post?</p>
+          <div className="reportReasons">
+         {["Spam", "Inappropriate", "Misinformation", "Other"].map((reason) => (
+          <button
+            key={reason}
+            className={`reasonBtn ${reportReason === reason ? "reasonSelected" : ""}`}
+            type="button"
+            onClick={() => setReportReason(reason)}
+          >
+            {reason}
+          </button>
+        ))}
+      </div>
+      <div className="modalActions">
+        <button className="actionBtn actionSecondary" type="button" onClick={() => setShowReportModal(false)}>
+          Cancel
+        </button>
+        <button
+          className="actionBtn actionDanger"
+          type="button"
+          onClick={handleReport}
+          disabled={!reportReason}
+        >
+             Submit Report
+          </button>
+         </div>
+       </div>
+     </div>
+    )}
+    </article> 
   );
 }

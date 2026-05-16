@@ -25,7 +25,7 @@
   
   .feedHeroTop h1 {
     margin: 0 0 6px;
-    font-size: 20px;
+    font-size: 24px;
     letter-spacing: 0.2px;
   }
   
@@ -67,7 +67,7 @@
   .filterPill {
     border: 1px solid rgba(0,0,0,0.10);
     background: rgba(255,255,255,0.75);
-    padding: 8px 12px;
+    padding: 10px 14px;
     border-radius: 999px;
     font-size: 12px;
     cursor: pointer;
@@ -87,7 +87,7 @@
   
   /* Create card */
   .createCard {
-    background: #fff;
+    background: #fbf4ee;
     border-radius: 14px;
     padding: 14px;
     border: 1px solid rgba(0,0,0,0.07);
@@ -149,7 +149,7 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 2px;
   }
   
   .createPostHeader {
@@ -215,7 +215,7 @@
   .createField {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
   }
   
   .createLabel {
@@ -250,7 +250,7 @@
   
   .createTextarea {
     resize: vertical;
-    min-height: 120px;
+    min-height: 100px;
   }
   
   .createMeta {
