@@ -289,7 +289,10 @@ export default function FeedView() {
           </div>
         </div>
 
-        {/* Filters */}
+        <CreatePostBox
+          onCreatePost={handleCreatePost}
+        />
+         {/* Filters */}
         <div className="feedFilters">
           {FILTERS
             .filter((f) => f !== "Removed" || userData?.isAdmin)
@@ -304,11 +307,6 @@ export default function FeedView() {
             </button>
           ))}
         </div>
-
-        <CreatePostBox
-          onCreatePost={handleCreatePost}
-        />
-
         {/* Radius Selector */}
         <div className="radiusControl">
           <span className="radiusLabel">Displaying Posts Within </span>
