@@ -210,12 +210,6 @@ export default function Post({ post, currentUser, onToggleRemove }) {
 
       <footer className="postFooter">
         <div className="postActions">
-          <button className="actionBtn actionPrimary" type="button">
-            Contact
-          </button>
-          <button className="actionBtn" type="button">
-            Share
-          </button>
 
           {isOwner && (
           <>
