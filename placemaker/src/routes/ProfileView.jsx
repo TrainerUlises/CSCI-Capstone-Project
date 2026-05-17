@@ -1,7 +1,7 @@
 import "./ProfileView.css";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
-import { doc, getDoc, collection, query, where, orderBy, onSnapshot } from "firebase/firestore"; // new imports 
+import { doc, getDoc, collection, query, where, orderBy, onSnapshot, updateDoc } from "firebase/firestore"; // new imports 
 import { useState, useEffect } from "react";
 import Post from "../components/Post"; // new imports
 
@@ -40,8 +40,12 @@ export default function Profile() {
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
+        const userData = userSnap.data();
           setUser(userSnap.data());
           setPhotoURL(userSnap.data().photoURL || null);
+          setIsAvailable(userData.isAvailable || false);
+          setExpiration(userData.availabilityExpiration ? new Date(userData.availabilityExpiration) : null);
+          setTags(userData.availabilityTags || []);
         } else {
           console.error("No user profile found!");
         }
@@ -81,16 +85,18 @@ export default function Profile() {
 
 const tagOptions = ["Shoveling" , "Heavy Lifting", "Gardening", "Tech Help", "Childcare", "Pet Care", "Transportation", "Language Assistance", "Elderly Assistance", "Other"];
 
-const handleAvailability = (duration) => {
-    setIsAvailable(true);
+const handleAvailability = async (duration) => {
     const expirationTime = new Date(Date.now() + duration * 60 * 60 * 1000);
+    setIsAvailable(true);
     setExpiration(expirationTime);
+    await saveAvailability(true, expirationTime, tags);
 };
 
-const handleAway =() => {
+const handleAway =async () => {
     setIsAvailable(false);
     setExpiration(null);
     setTags([]);
+    await saveAvailability(false, null, []);
 };
 
 const toggleTag = (tag) => {
@@ -106,7 +112,20 @@ const toggleTag = (tag) => {
   if (!user) {
     return <div>No user data available.</div>;
   }
-  
+const saveAvailability = async (available, exp, selectedTags) => {
+    const firebaseUser = auth.currentUser;
+    if (!firebaseUser) return;
+
+    try {
+        await updateDoc(doc(db, "users", firebaseUser.uid), {
+            isAvailable: available,
+            availabilityExpiration: exp ? expiration.toISOString() : null,
+            availabilityTags: selectedTags,
+        });
+    } catch (err) {
+        console.error("Error saving availability:", err);
+    }
+};
     const initials = user?.name
         .split(" ")
         .slice(0, 2)
