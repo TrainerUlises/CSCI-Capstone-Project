@@ -159,7 +159,7 @@ export default function ExploreView() {
   
       if (!userLocation) return true;
   
-      if (!post.locationPublic?.lat || !post.locationPublic?.lng) {
+      if (post.locationPublic?.lat == null || post.locationPublic?.lng == null) {
         return false;
       }
   
