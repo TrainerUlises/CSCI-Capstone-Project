@@ -16,13 +16,16 @@ export default function ForumView({ selectedForum, currentUser, selectedForumID,
 
         console.log("AUTH UID:", auth.currentUser?.uid);
         console.log("currentUser prop:", currentUser);
+        console.log("currentUser name:", currentUser.name);
 
         try {
             await addDoc(
                 collection(db, "forums", selectedForumID, "posts"),
                 {
                     text: trimmedMessage,
-                    senderID: currentUser,
+                    senderID: currentUser.uid,
+                    senderName: currentUser.name,
+                    isAdmin: currentUser.isAdmin || false,
                     createdAt: serverTimestamp(),
                 }
             );
@@ -42,7 +45,24 @@ export default function ForumView({ selectedForum, currentUser, selectedForumID,
             <div className="forum-view__post-list">
                 {selectedForum.map((post) => (
                     <div key={post.id} className="forum-view__post">
-                        <div>{post.senderID == currentUser ? `${post.senderID} (You)` : post.senderID}</div>
+                        <div>
+                            {post.senderID === auth.currentUser?.uid ? (
+                                <>
+                                    {post.senderName}
+                                    {post.isAdmin && (
+                                        <span role="img" aria-label="Admin badge"> 🛡️</span>
+                                    )}
+                                    {" (You)"}
+                                </>
+                            ) : (
+                                <>
+                                    {post.senderName}
+                                    {post.isAdmin && (
+                                        <span role="img" aria-label="Admin badge"> 🛡️</span>
+                                    )}
+                                </>
+                            )}
+                        </div>
                         <div>{post.text}</div>
                     </div>
                 ))}

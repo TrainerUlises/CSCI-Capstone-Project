@@ -96,6 +96,8 @@ export default function Signup() {
                     locality: locationData.locality,
                     adminAreaLevel1: locationData.adminAreaLevel1,
                 },
+                isAdmin: false,
+                isBanned: false,   
                 createdAt: serverTimestamp(),
             });
 
@@ -175,7 +177,7 @@ export default function Signup() {
 
                             <div className="form__row">
                                 <div className="form__group">
-                                    <label htmlFor="email">Email</label>
+                                    <label htmlFor="email">Email (will be shared with your neighbors!)</label>
                                     <input
                                         id="email"
                                         className="form__input"

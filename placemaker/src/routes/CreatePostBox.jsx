@@ -99,12 +99,11 @@ function CreatePostBox({ currentUser, onCreatePost }) {
   return (
     <form className="createCard createPostBox" onSubmit={handleSubmit}>
       <div className="createPostHeader">
-        <div className="avatar"></div>
-
         <div className="createPostHeaderText">
           <h3>Create a post</h3>
         </div>
       </div>
+      
 
       <div className="createTypeRow">
         <button
@@ -131,6 +130,14 @@ function CreatePostBox({ currentUser, onCreatePost }) {
           ♻️ Donation/Swap
         </button>
 
+        <button
+          type="button"
+          className={`createChip ${type === POST_TYPES.OTHER ? "isActive" : ""}`}
+          onClick={() => setType(POST_TYPES.OTHER)}
+        >
+          Other
+        </button>
+
         <label className="urgentInline">
           <input
             type="checkbox"
@@ -140,6 +147,7 @@ function CreatePostBox({ currentUser, onCreatePost }) {
           <span>{urgent ? "Urgent" : "Mark urgent"}</span>
         </label>
       </div>
+      <br />
 
       <div className="createField">
         <label className="createLabel">Title</label>

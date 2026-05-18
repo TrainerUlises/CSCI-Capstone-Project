@@ -34,15 +34,34 @@ export default function ExploreView() {
   const [posts, setPosts] = useState([]); // real posts
   const { user } = useAuth(); // real time render
   const [userData, setUserData] = useState(null);
+  const [userLocation, setUserLocation] = useState(null); // used for radius filtering
+  const [selectedRadius, setSelectedRadius] = useState(10); // used for radius fil, default to 5 miles, changed to 10 for testing purposes 
   const urgentCount = posts.filter(p => p.urgent).length;
 
+  // geolocation
+  useEffect(() => {
+    if(!navigator.geolocation) return; // base case
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        });
+      },
+      (error) => {
+        console.error("ERROR WITH GEOLOCATION!", error);
+      }
+    );
+  }, []);
+  
   //adding real time firestore listener
   // functionality
   // listens to post collections
   // orders by newest first
   // converts firestore time
   // updates in real time
-
+  
 
   useEffect(() => {
     const q = query(
@@ -64,6 +83,7 @@ export default function ExploreView() {
             : "Just now",
           author: {
             name: data.authorName,
+            photoURL: data.authorPhotoURL || null,
             initials: data.authorName
               ?.split(" ")
               .map((n) => n[0])
@@ -105,6 +125,26 @@ export default function ExploreView() {
     fetchUser();
   }, [user]);
   
+  function calcDistanceMiles(lat1, lng1, lat2, lng2)
+{
+  const toRad = (value) => (value * Math.PI) / 180;
+
+  const R = 3958.8;
+
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+
+  const formula =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+    Math.cos(toRad(lat2)) *
+    Math.sin(dLng / 2) *
+    Math.sin(dLng / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(formula), Math.sqrt(1 - formula));
+
+  return R * c;
+}
 
   /*const filteredPosts = useMemo(() => {
     return MOCK_POSTS.filter((p) => matchesFilter(p, activeFilter));
@@ -112,8 +152,28 @@ export default function ExploreView() {
 
   // replacing mock_posts with real posts
   const filteredPosts = useMemo(() => {
-    return posts.filter((p) => matchesFilter(p, activeFilter));
-  }, [posts, activeFilter]);
+
+    return posts.filter((post) => {
+  
+      if (!matchesFilter(post, activeFilter)) return false;
+  
+      if (!userLocation) return true;
+  
+      if (!post.locationPublic?.lat || !post.locationPublic?.lng) {
+        return false;
+      }
+  
+      const distance = calcDistanceMiles(
+        userLocation.lat,
+        userLocation.lng,
+        post.locationPublic.lat,
+        post.locationPublic.lng
+      );
+  
+      return distance <= selectedRadius;
+    });
+  
+  }, [posts, activeFilter, userLocation, selectedRadius]);
 
   return (
     <div className="feedPage">
@@ -150,6 +210,21 @@ export default function ExploreView() {
               {f}
             </button>
           ))}
+        </div>
+        <div className="radiusControl">
+          <span className="radiusLabel">Displaying Posts Within </span>
+
+          <select
+            className="radiusSelect"
+            value={selectedRadius}
+            onChange={(e) => setSelectedRadius(Number(e.target.value))}
+          >
+            <option value={5}>5 Miles</option>
+            <option value={10}>10 Miles</option>
+            <option value={15}>15 Miles</option>
+            <option value={25}>25 Miles</option>
+            <option value={35}>35 Miles</option>
+          </select>
         </div>
 
         <div className="feedGrid">

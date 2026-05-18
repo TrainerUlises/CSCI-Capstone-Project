@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../firebase";
 
 function ProfileSettingsButton() {
     const navigate = useNavigate();
@@ -89,7 +90,7 @@ function ProfileSettingsButton() {
         const file = e.target.files[0];
         if (!file || !auth.currentUser) return;
 
-        const storage = getStorage();
+        //const storage = getStorage();
         const storageRef = ref(storage, `profilePictures/${auth.currentUser.uid}_${Date.now()}`);
     
         try {
@@ -349,73 +350,6 @@ function ProfileSettingsButton() {
               </div>
             )}
           </div>
-        </section>
-        {/* Notifications */}
-        <section className="card sectionCard">
-            <div className="sectionHeader">
-                <span className="sectionIcon" aria-hidden="true">🔔</span>
-                <h2 className="sectionTitle">Notifications</h2>
-            </div>
-
-            <div className="settingRow">
-                <div className="settingText">
-                    <div className="settingTitle">New Posts</div>
-                    <div className="settingSub">Get notified when neighbors post updates</div>
-                </div>
-                <label className="switch" aria-label="Toggle new posts notifications">
-                    <input
-                        type="checkbox"
-                        //checked={notifs.newPosts}
-                        onChange={() => toggle("newPosts")}
-                    />
-                    <span className="slider" />
-                </label>
-            </div>
-
-            <div className="settingRow">
-                <div className="settingText">
-                    <div className="settingTitle">New Events</div>
-                    <div className="settingSub">Get notified about upcoming events</div>
-                </div>
-                <label className="switch" aria-label="Toggle new events notifications">
-                    <input
-                        type="checkbox"
-                        //checked={notifs.newEvents}
-                        onChange={() => toggle("newEvents")}
-                    />
-                    <span className="slider" />
-                </label>
-            </div>
-
-            <div className="settingRow">
-                <div className="settingText">
-                    <div className="settingTitle">Direct Messages</div>
-                    <div className="settingSub">Get notified when neighbors message you</div>
-                </div>
-                <label className="switch" aria-label="Toggle direct messages notifications">
-                    <input
-                        type="checkbox"
-                        //checked={notifs.directMessages}
-                        onChange={() => toggle("directMessages")}
-                    />
-                    <span className="slider" />
-                </label>
-            </div>
-
-            <div className="settingRow settingRowLast">
-                <div className="settingText">
-                    <div className="settingTitle">Weekly Digest</div>
-                    <div className="settingSub">Receive a weekly summary of block activity</div>
-                </div>
-                <label className="switch" aria-label="Toggle weekly digest">
-                    <input
-                        type="checkbox"
-                        //checked={notifs.weeklyDigest}
-                        onChange={() => toggle("weeklyDigest")}
-                    />
-                    <span className="slider" />
-                </label>
-            </div>
         </section>
       </div>
     </main>
