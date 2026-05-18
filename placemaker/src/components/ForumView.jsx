@@ -9,14 +9,26 @@ export default function ForumView({ selectedForum, currentUser, selectedForumID,
     const [newPost, setNewPost] = useState("");
 
     const handleSend = async () => {
-        const trimmedMessage = newPost.trim();
         if (!trimmedMessage) return; // base case
         //Firestore write here
         //console.log(currentUser, "totally just sent: (", trimmedMessage, ") to firestore from", selectedForumID);
+        //console.log("AUTH UID:", auth.currentUser?.uid);
+        //console.log("currentUser prop:", currentUser);
+        //console.log("currentUser name:", currentUser.name);
 
-        console.log("AUTH UID:", auth.currentUser?.uid);
-        console.log("currentUser prop:", currentUser);
-        console.log("currentUser name:", currentUser.name);
+        if (!currentUser) {
+            console.error("Current user not loaded yet.");
+            return;
+          }
+        
+          if (!currentUser.uid) {
+            console.error("Missing current user UID.");
+            return;
+          }
+        
+          const trimmedMessage = message.trim();
+        
+          if (!trimmedMessage) return;
 
         try {
             await addDoc(
@@ -24,7 +36,7 @@ export default function ForumView({ selectedForum, currentUser, selectedForumID,
                 {
                     text: trimmedMessage,
                     senderID: currentUser.uid,
-                    senderName: currentUser.name,
+                    senderName: currentUser.name || "Unknown User",
                     isAdmin: currentUser.isAdmin || false,
                     createdAt: serverTimestamp(),
                 }
@@ -35,8 +47,12 @@ export default function ForumView({ selectedForum, currentUser, selectedForumID,
         console.error("ERROR SENDING MESSAGE!!!", error);
     }
     };
-    if (selectedForum.length == 0) {
-        return <div className="forum-view__container">Select a forum to view.</div>;
+    if (!selectedForum) {
+        return (
+            <div className="forum-view__container">
+                Select a forum to view.
+            </div>
+        );
     }
 
     return (
@@ -75,7 +91,7 @@ export default function ForumView({ selectedForum, currentUser, selectedForumID,
                     onChange={(e) => setNewPost(e.target.value)}
                     placeholder="Type here"
                 />
-                <button className="forum-view__input-button" onClick={handleSend}>Send</button>
+                <button className="forum-view__input-button" disabled={!currentUser} onClick={handleSend}>Send</button>
             </div>
         </div>
     );
