@@ -119,7 +119,7 @@ const saveAvailability = async (available, exp, selectedTags) => {
     try {
         await updateDoc(doc(db, "users", firebaseUser.uid), {
             isAvailable: available,
-            availabilityExpiration: exp ? expiration.toISOString() : null,
+            availabilityExpiration: exp ? exp.toISOString() : null,
             availabilityTags: selectedTags,
         });
     } catch (err) {
