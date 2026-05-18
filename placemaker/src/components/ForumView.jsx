@@ -9,7 +9,6 @@ export default function ForumView({ selectedForum, currentUser, selectedForumID,
     const [newPost, setNewPost] = useState("");
 
     const handleSend = async () => {
-        if (!trimmedMessage) return; // base case
         //Firestore write here
         //console.log(currentUser, "totally just sent: (", trimmedMessage, ") to firestore from", selectedForumID);
         //console.log("AUTH UID:", auth.currentUser?.uid);
@@ -26,7 +25,7 @@ export default function ForumView({ selectedForum, currentUser, selectedForumID,
             return;
           }
         
-          const trimmedMessage = message.trim();
+          const trimmedMessage = newPost.trim();
         
           if (!trimmedMessage) return;
 

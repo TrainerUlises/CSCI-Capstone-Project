@@ -76,6 +76,7 @@ export default function FeedView() {
     
       authorName: userData.name || "Unknown User",
       authorPhotoURL: userData.photoURL || null,
+      isAdmin: userData.isAdmin || false,
       zipCode: postData.locationPrivate?.zipCode || userData.zipCode || "",
     
       timestamp: serverTimestamp(),
