@@ -135,7 +135,7 @@ export default function Neighbors() {
                                 </div>
 
                                 <div className="neighbors__info">
-                                    <h2 className="neighbors__name">{user.name}</h2>
+                                    <h2 className="neighbors__name">{user.name}{user.isAdmin && "🛡️"}</h2>
 
                                     <div className="neighbors__info-line">
                                         📧 {user.email}
