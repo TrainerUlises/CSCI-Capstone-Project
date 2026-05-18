@@ -74,9 +74,7 @@ export default function FeedView() {
       body: postData.body,
       isRemoved: false,
     
-      authorName: userData.name || "Unknown User",
-      authorPhotoURL: userData.photoURL || null,
-      isAdmin: userData.isAdmin || false,
+      userId: firebaseUser.uid,
       zipCode: postData.locationPrivate?.zipCode || userData.zipCode || "",
     
       timestamp: serverTimestamp(),
@@ -90,6 +88,7 @@ export default function FeedView() {
 
   const [activeFilter, setActiveFilter] = useState("All");
   const [posts, setPosts] = useState([]); // real posts
+  const [usersMap, setUsersMap] = useState({});
   const { user } = useAuth(); // real time render
   const [userData, setUserData] = useState(null);
   const [userLocation, setUserLocation] = useState(null); // used for radius filtering
@@ -130,6 +129,23 @@ export default function FeedView() {
       //orderBy("timestamp", "desc") // Sort newest first
     //);
 
+    useEffect(() => {
+      const unsubscribe = onSnapshot(
+        collection(db, "users"),
+        (snapshot) => {
+          const users = {};
+    
+          snapshot.docs.forEach((doc) => {
+            users[doc.id] = doc.data();
+          });
+    
+          setUsersMap(users);
+        }
+      );
+    
+      return () => unsubscribe();
+    }, []);
+
    useEffect(() => {
     const q = query(
       collection(db, "posts"),
@@ -140,16 +156,17 @@ export default function FeedView() {
       const fetchedPosts = snapshot.docs.map((doc) => {
         const data = doc.data();
         const normalizedType = normalizePostType(data.type);
+        const authorData = usersMap[data.userId] || {};
   
         return {
           id: doc.id,
           ...data,
-          isAdmin: data.isAdmin || false,
+          //isAdmin: data.isAdmin || false,
           type: normalizedType,
           time: data.timestamp?.toDate
             ? data.timestamp.toDate().toLocaleString()
             : "Just now",
-          author: {
+          /*author: {
             name: data.authorName,
             photoURL: data.authorPhotoURL || null,
             initials: data.authorName
@@ -157,7 +174,18 @@ export default function FeedView() {
               .map((n) => n[0])
               .join("")
               .toUpperCase(),
+          },*/
+          author: {
+            name: authorData.name || "Unknown User",
+            photoURL: authorData.photoURL || null,
+            initials: authorData.name
+              ?.split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase(),
           },
+        
+        isAdmin: authorData.isAdmin || false,
           locationPublic: data.locationPublic || null,
           details: {
             neededBy: data.neededBy,
@@ -169,7 +197,7 @@ export default function FeedView() {
     });
   
     return () => unsubscribe();
-  }, []);
+  }, [usersMap]);
   
 
 

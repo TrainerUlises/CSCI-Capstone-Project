@@ -5,6 +5,7 @@ import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { signOut } from "firebase/auth";
 
 export default function Login() {
 
@@ -39,7 +40,15 @@ export default function Login() {
 
             if (userDocSnap.exists()) {
                 console.log("FIRESTORE USER FOUND");
-                //console.log("User Data:", userDocSnap.data());
+                const userData = userDocSnap.data();
+
+                // CHECK IF BANNED
+                if (userData.isBanned) {
+                    await auth.signOut();
+
+                    setError("This account has been banned.");
+                    return;
+                }
             } else {
                 console.log("No Firestore user document found.");
             }
