@@ -9,20 +9,34 @@ export default function ForumView({ selectedForum, currentUser, selectedForumID,
     const [newPost, setNewPost] = useState("");
 
     const handleSend = async () => {
-        const trimmedMessage = newPost.trim();
-        if (!trimmedMessage) return; // base case
         //Firestore write here
         //console.log(currentUser, "totally just sent: (", trimmedMessage, ") to firestore from", selectedForumID);
+        //console.log("AUTH UID:", auth.currentUser?.uid);
+        //console.log("currentUser prop:", currentUser);
+        //console.log("currentUser name:", currentUser.name);
 
-        console.log("AUTH UID:", auth.currentUser?.uid);
-        console.log("currentUser prop:", currentUser);
+        if (!currentUser) {
+            console.error("Current user not loaded yet.");
+            return;
+          }
+        
+          if (!currentUser.uid) {
+            console.error("Missing current user UID.");
+            return;
+          }
+        
+          const trimmedMessage = newPost.trim();
+        
+          if (!trimmedMessage) return;
 
         try {
             await addDoc(
                 collection(db, "forums", selectedForumID, "posts"),
                 {
                     text: trimmedMessage,
-                    senderID: currentUser,
+                    senderID: currentUser.uid,
+                    senderName: currentUser.name || "Unknown User",
+                    isAdmin: currentUser.isAdmin || false,
                     createdAt: serverTimestamp(),
                 }
             );
@@ -32,8 +46,12 @@ export default function ForumView({ selectedForum, currentUser, selectedForumID,
         console.error("ERROR SENDING MESSAGE!!!", error);
     }
     };
-    if (selectedForum.length == 0) {
-        return <div className="forum-view__container">Select a forum to view.</div>;
+    if (!selectedForum) {
+        return (
+            <div className="forum-view__container">
+                Select a forum to view.
+            </div>
+        );
     }
 
     return (
@@ -42,7 +60,24 @@ export default function ForumView({ selectedForum, currentUser, selectedForumID,
             <div className="forum-view__post-list">
                 {selectedForum.map((post) => (
                     <div key={post.id} className="forum-view__post">
-                        <div>{post.senderID == currentUser ? `${post.senderID} (You)` : post.senderID}</div>
+                        <div>
+                            {post.senderID === auth.currentUser?.uid ? (
+                                <>
+                                    {post.senderName}
+                                    {post.isAdmin && (
+                                        <span role="img" aria-label="Admin badge"> 🛡️</span>
+                                    )}
+                                    {" (You)"}
+                                </>
+                            ) : (
+                                <>
+                                    {post.senderName}
+                                    {post.isAdmin && (
+                                        <span role="img" aria-label="Admin badge"> 🛡️</span>
+                                    )}
+                                </>
+                            )}
+                        </div>
                         <div>{post.text}</div>
                     </div>
                 ))}
@@ -55,7 +90,7 @@ export default function ForumView({ selectedForum, currentUser, selectedForumID,
                     onChange={(e) => setNewPost(e.target.value)}
                     placeholder="Type here"
                 />
-                <button className="forum-view__input-button" onClick={handleSend}>Send</button>
+                <button className="forum-view__input-button" disabled={!currentUser} onClick={handleSend}>Send</button>
             </div>
         </div>
     );

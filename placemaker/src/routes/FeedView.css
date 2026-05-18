@@ -588,3 +588,7 @@
   box-shadow: 0 0 0 2px rgba(199, 127, 90, 0.2);
 }
 
+.createPostHeaderText h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+}

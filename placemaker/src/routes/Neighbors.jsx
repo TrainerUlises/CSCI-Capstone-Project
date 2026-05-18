@@ -1,4 +1,5 @@
 ﻿import './Neighbors.css'
+import './ProfileView.css'
 import { React, useState, useEffect } from "react";
 import { db, auth } from "../firebase"; // adjust path
 import { collection, query, where, doc, getDoc, getDocs, updateDoc } from "firebase/firestore";
@@ -131,11 +132,31 @@ export default function Neighbors() {
                             //This basically just the ProfileView card with its respective css imported and streamlined a bit into the neighbors css file
                             <div className="neighbors__card" key={user.id}>
                                 <div className="avatar">
-                                    {initials}
-                                </div>
+                                    {user.photoURL ? (
+                                        <img
+                                        src={user.photoURL}
+                                        alt={user.name}
+                                        style={{
+                                            width: "100%",
+                                            height: "100%",
+                                            borderRadius: "50%",
+                                            objectFit: "cover",
+                                        }}
+                                        />
+                                    ) : (
+                                        initials
+                                    )}
+                                    </div>
 
                                 <div className="neighbors__info">
                                     <h2 className="neighbors__name">{user.name}{user.isAdmin && "🛡️"}</h2>
+                                    <div className="availabilityStatus">
+                                        {user.isAvailable ? (
+                                            <span className="available">Available</span>
+                                        ) : (
+                                            <span className="notAvailable">Not Available</span>
+                                        )}
+                                    </div>
 
                                     <div className="neighbors__info-line">
                                         📧 {user.email}

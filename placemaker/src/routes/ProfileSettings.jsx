@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../firebase";
 
 function ProfileSettingsButton() {
     const navigate = useNavigate();
@@ -22,6 +23,8 @@ function ProfileSettingsButton() {
         const [user, setUser] = useState(null);
         const [loading, setLoading] = useState(true);
         const [saving, setSaving] = useState(false);
+        const [photoFile, setPhotoFile] = useState(null);
+        const [photoURL, setPhotoURL] = useState(null);
       
         const [formData, setFormData] = useState({
             name: "",
@@ -34,6 +37,7 @@ function ProfileSettingsButton() {
             workHours: "",
             website: "",
         });
+        
       
         useEffect(() => {
           const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
@@ -61,6 +65,7 @@ function ProfileSettingsButton() {
                     workHours: userData.workHours || "",
                     website: userData.website || "",
                   });
+                  setPhotoURL(userData.photoURL || null);
               } else {
                 console.error("No user profile found!");
               }
@@ -81,7 +86,22 @@ function ProfileSettingsButton() {
             [name]: value,
           }));
         }
-      
+      async function handlePhotoUpload(e) {
+        const file = e.target.files[0];
+        if (!file || !auth.currentUser) return;
+
+        //const storage = getStorage();
+        const storageRef = ref(storage, `profilePictures/${auth.currentUser.uid}_${Date.now()}`);
+    
+        try {
+            await uploadBytes(storageRef, file);
+            const downloadURL = await getDownloadURL(storageRef);
+            setPhotoURL(downloadURL);
+            setPhotoFile(file);
+        } catch (err) {
+            console.error("Photo upload failed:", err);
+       }
+    }
         async function handleSave() {
           const currentUser = auth.currentUser;
           if (!currentUser) return;
@@ -99,6 +119,7 @@ function ProfileSettingsButton() {
                 skills: formData.skills,
                 workHours: formData.workHours,
                 website: formData.website,
+                photoURL: photoURL,
             });
             navigate("/profile");
           } catch (err) {
@@ -126,9 +147,32 @@ function ProfileSettingsButton() {
         {/* Top Profile Card */}
         <section className="card profileCard">
           <div className="profileTopRow">
-            <div className="avatar" aria-hidden="true">
-              {initials}
-            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <div className="avatar" aria-hidden="true">
+                {photoURL ? (
+               <img src={photoURL} alt="Profile" 
+                style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} />
+              ) : (
+                initials
+              )}
+        </div>
+       <div>
+          <input
+            id="photoUpload"
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoUpload}
+            style={{ display: "none" }}
+          />
+      <button
+            type="button"
+            className="btn btnSecondary"
+            onClick={() => document.getElementById("photoUpload").click()}
+      >
+        {photoFile ? "Change Photo" : "Upload Photo"}
+      </button>
+      </div>
+    </div>
 
             <div className="profileMeta">
               <h1 className="profileName">{user.name}</h1>
@@ -306,73 +350,6 @@ function ProfileSettingsButton() {
               </div>
             )}
           </div>
-        </section>
-        {/* Notifications */}
-        <section className="card sectionCard">
-            <div className="sectionHeader">
-                <span className="sectionIcon" aria-hidden="true">🔔</span>
-                <h2 className="sectionTitle">Notifications</h2>
-            </div>
-
-            <div className="settingRow">
-                <div className="settingText">
-                    <div className="settingTitle">New Posts</div>
-                    <div className="settingSub">Get notified when neighbors post updates</div>
-                </div>
-                <label className="switch" aria-label="Toggle new posts notifications">
-                    <input
-                        type="checkbox"
-                        //checked={notifs.newPosts}
-                        onChange={() => toggle("newPosts")}
-                    />
-                    <span className="slider" />
-                </label>
-            </div>
-
-            <div className="settingRow">
-                <div className="settingText">
-                    <div className="settingTitle">New Events</div>
-                    <div className="settingSub">Get notified about upcoming events</div>
-                </div>
-                <label className="switch" aria-label="Toggle new events notifications">
-                    <input
-                        type="checkbox"
-                        //checked={notifs.newEvents}
-                        onChange={() => toggle("newEvents")}
-                    />
-                    <span className="slider" />
-                </label>
-            </div>
-
-            <div className="settingRow">
-                <div className="settingText">
-                    <div className="settingTitle">Direct Messages</div>
-                    <div className="settingSub">Get notified when neighbors message you</div>
-                </div>
-                <label className="switch" aria-label="Toggle direct messages notifications">
-                    <input
-                        type="checkbox"
-                        //checked={notifs.directMessages}
-                        onChange={() => toggle("directMessages")}
-                    />
-                    <span className="slider" />
-                </label>
-            </div>
-
-            <div className="settingRow settingRowLast">
-                <div className="settingText">
-                    <div className="settingTitle">Weekly Digest</div>
-                    <div className="settingSub">Receive a weekly summary of block activity</div>
-                </div>
-                <label className="switch" aria-label="Toggle weekly digest">
-                    <input
-                        type="checkbox"
-                        //checked={notifs.weeklyDigest}
-                        onChange={() => toggle("weeklyDigest")}
-                    />
-                    <span className="slider" />
-                </label>
-            </div>
         </section>
       </div>
     </main>

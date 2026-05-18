@@ -122,7 +122,22 @@ export default function Post({ post, currentUser, onToggleRemove }) {
     <article className={`postCard ${isRemoved ? "postRemoved" : ""}`}>
       <header className="postHeader">
         <div className="postAuthor">
-          <div className="avatar avatar-sm">{author?.initials}</div>
+        <div className="avatar avatar-sm">
+          {author?.photoURL ? (
+            <img
+              src={author.photoURL}
+              alt={author.name}
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: "50%",
+                objectFit: "cover",
+              }}
+            />
+          ) : (
+            author?.initials
+          )}
+        </div>
 
           <div className="postAuthorMeta">
             <div className="postAuthorLine">
@@ -210,12 +225,6 @@ export default function Post({ post, currentUser, onToggleRemove }) {
 
       <footer className="postFooter">
         <div className="postActions">
-          <button className="actionBtn actionPrimary" type="button">
-            Contact
-          </button>
-          <button className="actionBtn" type="button">
-            Share
-          </button>
 
           {isOwner && (
           <>
@@ -244,7 +253,7 @@ export default function Post({ post, currentUser, onToggleRemove }) {
                   type="button"
                   onClick={() => setIsEditing(true)}
                 >
-                  EDIT
+                  Edit
                 </button>
 
                 <button
@@ -252,7 +261,7 @@ export default function Post({ post, currentUser, onToggleRemove }) {
                   type="button"
                   onClick={handleDelete}
                 >
-                  DELETE
+                  Delete
                 </button>
               </>
             )}

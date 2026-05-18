@@ -19,12 +19,28 @@ const TYPE_CLASS = {
   };
   
 
-function matchesFilter(post, activeFilter) {
-  if (activeFilter === "All") return true;
-  if (activeFilter === "Urgent") return post.urgent === true;
-  if (activeFilter === "Removed") return post.isRemoved === true;
-  return post.type === activeFilter;
-}
+  function matchesFilter(post, activeFilter, isAdmin) {
+
+    // normal users never see removed posts
+    if (!isAdmin && post.isRemoved) return false;
+  
+    // admins only see removed posts inside Removed tab
+    if (isAdmin && activeFilter !== "Removed" && post.isRemoved) {
+      return false;
+    }
+  
+    if (activeFilter === "All") return true;
+  
+    if (activeFilter === "Urgent") {
+      return post.urgent === true;
+    }
+  
+    if (activeFilter === "Removed") {
+      return isAdmin && post.isRemoved === true;
+    }
+  
+    return post.type === activeFilter;
+  }
 
 function normalizePostType(type) {
   if (type === "Request Aid") return "Needs Aid";
@@ -59,6 +75,8 @@ export default function FeedView() {
       isRemoved: false,
     
       authorName: userData.name || "Unknown User",
+      authorPhotoURL: userData.photoURL || null,
+      isAdmin: userData.isAdmin || false,
       zipCode: postData.locationPrivate?.zipCode || userData.zipCode || "",
     
       timestamp: serverTimestamp(),
@@ -133,6 +151,7 @@ export default function FeedView() {
             : "Just now",
           author: {
             name: data.authorName,
+            photoURL: data.authorPhotoURL || null,
             initials: data.authorName
               ?.split(" ")
               .map((n) => n[0])
@@ -207,7 +226,9 @@ export default function FeedView() {
 
     return posts.filter((post) => {
       //applying existing filter
-      if(!matchesFilter(post, activeFilter)) return false;
+      if (!matchesFilter(post, activeFilter, userData?.isAdmin)) {
+        return false;
+      }
 
       // if user loca not available yet, we do not filter by distance
       if(!userLocation) return true;
@@ -290,6 +311,7 @@ export default function FeedView() {
         </div>
 
         <CreatePostBox
+          currentUser={userData}
           onCreatePost={handleCreatePost}
         />
          {/* Filters */}
@@ -307,7 +329,7 @@ export default function FeedView() {
             </button>
           ))}
         </div>
-        {/* Radius Selector */}
+        {/* Radius Selector 
         <div className="radiusControl">
           <span className="radiusLabel">Displaying Posts Within </span>
           <select
@@ -321,7 +343,7 @@ export default function FeedView() {
             <option value={25}>25 Miles</option>
             <option value={35}>35 Miles</option>
           </select>
-        </div>
+        </div>*/}
 
         <div className="feedGrid">
           {filteredPosts.map((post) => (
